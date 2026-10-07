@@ -1,0 +1,30 @@
+:root {
+  --space-1: 4px;
+  --space-2: 6px;
+  --space-3: 8px;
+  --space-4: 10px;
+  --space-5: 12px;
+  --space-6: 14px;
+  --space-7: 16px;
+  --space-8: 18px;
+  --space-9: 20px;
+  --space-10: 24px;
+  --space-12: 28px;
+  --space-14: 32px;
+  --space-16: 36px;
+  --space-20: 40px;
+  --space-24: 56px;
+  --space-28: 64px;
+
+  --section-y: 56px; /* vertical rhythm between manual sections */
+  --gutter: 24px; /* page side padding */
+  --content-max: 920px; /* prose / document max width */
+  --measure-lede: 60ch;
+  --measure-body: 56ch;
+  --measure-heading: 20ch;
+
+  --control-height-sm: 32px;
+  --control-height: 38px;
+  --control-height-lg: 44px;
+  --touch-min: 44px; /* mobile: thumb-reachable minimum */
+}

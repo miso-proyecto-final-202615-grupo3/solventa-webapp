@@ -1,0 +1,90 @@
+:root {
+  /* ---- Base palette (from Manual de Marca) ---- */
+  --slv-ink: #101b2d;
+  --slv-paper: #f5f7f4;
+  --slv-paper-dim: #edf0ec;
+  --slv-cobalto: #1b3a6b;
+  --slv-cobalto-dim: #dce4ef;
+  --slv-ambar: #f2a93b;
+  --slv-ambar-ink: #7a4e0a;
+  --slv-ambar-bg: #fbeac9;
+  --slv-verde: #1e8f6f;
+  --slv-verde-bg: #e1f1ea;
+  --slv-verde-ink: #125c46;
+  --slv-coral: #e85d4c;
+  --slv-coral-bg: #fbe7e3;
+  --slv-coral-ink: #a73a2b;
+  --slv-white: #ffffff;
+
+  /* ---- Ink ramp (alpha over paper) ---- */
+  --ink-90: rgba(16, 27, 45, 0.9);
+  --ink-80: rgba(16, 27, 45, 0.8);
+  --ink-72: rgba(16, 27, 45, 0.72);
+  --ink-62: rgba(16, 27, 45, 0.62);
+  --ink-55: rgba(16, 27, 45, 0.55);
+  --ink-50: rgba(16, 27, 45, 0.5);
+  --ink-28: rgba(16, 27, 45, 0.28);
+  --ink-14: rgba(16, 27, 45, 0.14);
+  --ink-06: rgba(16, 27, 45, 0.06);
+
+  /* ---- Paper ramp (alpha over ink) ---- */
+  --paper-72: rgba(245, 247, 244, 0.72);
+  --paper-50: rgba(245, 247, 244, 0.5);
+  --paper-20: rgba(245, 247, 244, 0.2);
+
+  /* ---- Semantic: surfaces ---- */
+  --surface-base: var(--slv-paper);
+  --surface-raised: var(--slv-white);
+  --surface-sunken: var(--slv-paper-dim);
+  --surface-inverse: var(--slv-ink);
+  --surface-card: var(--slv-white);
+  --surface-accent-soft: var(--slv-ambar-bg);
+  --surface-success-soft: var(--slv-verde-bg);
+  --surface-alert-soft: var(--slv-coral-bg);
+  --surface-primary-soft: var(--slv-cobalto-dim);
+
+  /* ---- Semantic: text ---- */
+  --text-body: var(--slv-ink);
+  --text-muted: var(--ink-62);
+  --text-subtle: var(--ink-50);
+  --text-on-inverse: var(--slv-paper);
+  --text-on-inverse-muted: var(--paper-72);
+  --text-primary: var(--slv-cobalto);
+  --text-accent: var(--slv-ambar-ink);
+  --text-success: var(--slv-verde-ink);
+  --text-alert: var(--slv-coral-ink);
+
+  /* ---- Semantic: lines ---- */
+  --line: var(--ink-14);
+  --line-strong: var(--ink-28);
+  --line-inverse: var(--paper-20);
+
+  /* ---- Semantic: interactive ---- */
+  --action-primary: var(--slv-cobalto);
+  --action-primary-hover: #16305a;
+  --action-primary-press: #122748;
+  --action-primary-text: var(--slv-white);
+  --action-accent: var(--slv-ambar);
+  --action-accent-hover: #e39b29;
+  --action-accent-press: #ce8b1f;
+  --action-accent-text: var(--slv-ambar-ink);
+  --action-secondary-border: var(--line-strong);
+  --action-secondary-hover-bg: var(--ink-06);
+  --focus-ring: var(--slv-cobalto);
+  --disabled-bg: var(--slv-paper-dim);
+  --disabled-text: var(--ink-28);
+
+  /* ---- Semantic: status (badge / state pairs) ---- */
+  --status-auto-bg: var(--slv-ambar-bg);
+  --status-auto-ink: var(--slv-ambar-ink);
+  --status-auto-dot: var(--slv-ambar);
+  --status-active-bg: var(--slv-verde-bg);
+  --status-active-ink: var(--slv-verde-ink);
+  --status-active-dot: var(--slv-verde);
+  --status-review-bg: var(--slv-cobalto-dim);
+  --status-review-ink: var(--slv-cobalto);
+  --status-review-dot: var(--slv-cobalto);
+  --status-rejected-bg: var(--slv-coral-bg);
+  --status-rejected-ink: var(--slv-coral-ink);
+  --status-rejected-dot: var(--slv-coral);
+}

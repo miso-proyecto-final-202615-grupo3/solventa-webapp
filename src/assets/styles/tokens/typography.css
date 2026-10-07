@@ -1,0 +1,42 @@
+:root {
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Scale — values taken verbatim from the manual's type scale */
+  --size-h1: 54px;
+  --size-h1-min: 40px;
+  --size-h2: 30px;
+  --size-h2-min: 28px;
+  --size-h3: 19px;
+  --size-h4: 17px;
+  --size-body-lg: 18px;
+  --size-body: 16px;
+  --size-body-sm: 15px;
+  --size-ui: 14.5px;
+  --size-caption: 13px;
+  --size-mono: 12.5px;
+  --size-mono-sm: 11.5px;
+
+  --leading-display: 1.08;
+  --leading-heading: 1.2;
+  --leading-body: 1.55;
+  --leading-tight: 1;
+
+  --tracking-display: -0.01em;
+  --tracking-normal: 0;
+
+  /* Semantic roles */
+  --text-style-display: var(--weight-semibold) var(--size-h1)/var(--leading-display)
+    var(--font-display);
+  --text-style-h2: var(--weight-semibold) var(--size-h2)/var(--leading-heading) var(--font-display);
+  --text-style-h3: var(--weight-semibold) var(--size-h3)/var(--leading-heading) var(--font-display);
+  --text-style-body: var(--weight-regular) var(--size-body)/var(--leading-body) var(--font-body);
+  --text-style-ui: var(--weight-semibold) var(--size-ui)/var(--leading-tight) var(--font-body);
+  --text-style-kicker: var(--weight-regular) var(--size-mono)/1.4 var(--font-mono);
+}

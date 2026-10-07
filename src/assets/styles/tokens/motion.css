@@ -1,0 +1,10 @@
+:root {
+  --duration-fast: 120ms; /* @kind other */
+  --duration: 150ms; /* @kind other */
+  --duration-slow: 220ms; /* @kind other */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1); /* @kind other */
+  --ease-out: ease-out; /* @kind other */
+  --transition-control:
+    background-color var(--duration) var(--ease-standard),
+    border-color var(--duration) var(--ease-standard), color var(--duration) var(--ease-standard);
+}
