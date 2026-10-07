@@ -1,0 +1,46 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  id-token: write # necesario para OIDC (sin AWS keys guardadas)
+  contents: read
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build (production)
+        run: npx ng build --configuration production
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Sync a S3
+        run: |
+          aws s3 sync dist/solventa-webapp/browser "s3://${{ vars.AWS_S3_BUCKET }}" --delete
+
+      - name: Invalidar cache de CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ vars.AWS_CLOUDFRONT_DISTRIBUTION_ID }}" \
+            --paths "/*"

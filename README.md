@@ -14,6 +14,15 @@ sistema de diseño en `_ds/`, datos de ejemplo en `datos.js`).
 
 Generado con [Angular CLI](https://github.com/angular/angular-cli) v22.2.2.
 
+## CI/CD
+
+- `.github/workflows/ci.yml`: lint + test + build en cada PR/push a `main`.
+- `.github/workflows/deploy.yml`: deploy a AWS (S3 + CloudFront) al pushear
+  a `main`, autenticado via OIDC (sin AWS keys guardadas).
+- `infra/`: CDK (TypeScript) con la infra de hosting. Ver `infra/README.md`
+  para el setup inicial (`cdk bootstrap` + `cdk deploy`) y qué variables
+  cargar en GitHub.
+
 ## Development server
 
 To start a local development server, run:
