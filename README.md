@@ -14,11 +14,17 @@ sistema de diseño en `_ds/`, datos de ejemplo en `datos.js`).
 
 Generado con [Angular CLI](https://github.com/angular/angular-cli) v22.2.2.
 
+## Branching
+
+`feature/*` → PR a `dev` → PR a `main`. `dev` es el ambiente de pruebas
+(AWS), `main` queda para producción cuando se configure esa cuenta.
+
 ## CI/CD
 
-- `.github/workflows/ci.yml`: lint + test + build en cada PR/push a `main`.
-- `.github/workflows/deploy.yml`: deploy a AWS (S3 + CloudFront) al pushear
-  a `main`, autenticado via OIDC (sin AWS keys guardadas).
+- `.github/workflows/ci.yml`: lint + test + build en cada PR/push a
+  `dev`/`main`.
+- `.github/workflows/deploy.yml`: deploy a AWS dev (S3 + CloudFront) al
+  pushear a `dev`, autenticado via OIDC (sin AWS keys guardadas).
 - `infra/`: Terraform con la infra de hosting. Ver `infra/README.md` para
   el setup inicial (`terraform init` + `terraform apply`) y qué variables
   cargar en GitHub.
