@@ -19,8 +19,8 @@ Generado con [Angular CLI](https://github.com/angular/angular-cli) v22.2.2.
 - `.github/workflows/ci.yml`: lint + test + build en cada PR/push a `main`.
 - `.github/workflows/deploy.yml`: deploy a AWS (S3 + CloudFront) al pushear
   a `main`, autenticado via OIDC (sin AWS keys guardadas).
-- `infra/`: CDK (TypeScript) con la infra de hosting. Ver `infra/README.md`
-  para el setup inicial (`cdk bootstrap` + `cdk deploy`) y qué variables
+- `infra/`: Terraform con la infra de hosting. Ver `infra/README.md` para
+  el setup inicial (`terraform init` + `terraform apply`) y qué variables
   cargar en GitHub.
 
 ## Development server

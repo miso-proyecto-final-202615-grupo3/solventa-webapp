@@ -52,7 +52,13 @@ Thumbs.db
 /.nyc_output
 *.tsbuildinfo
 
-# CDK (infra)
-infra/node_modules
-infra/cdk.out
-infra/dist
+# Terraform (infra)
+infra/.terraform/
+infra/*.tfstate
+infra/*.tfstate.*
+infra/*.tfplan
+infra/crash.log
+infra/override.tf
+infra/override.tf.json
+infra/*_override.tf
+infra/*_override.tf.json
