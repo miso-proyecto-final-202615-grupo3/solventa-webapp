@@ -1,10 +1,8 @@
 resource "aws_s3_bucket" "site" {
-  bucket_prefix = "solventa-webapp-"
+  bucket_prefix = "solventa-webapp-${var.environment}-"
 
-  # Evita borrar el bucket por accidente con un `terraform destroy` corrido sin pensar.
-  lifecycle {
-    prevent_destroy = true
-  }
+  # Sin prevent_destroy: es el ambiente de dev, se espera poder recrearlo
+  # con `terraform destroy`/`apply`. Agregar la proteccion cuando se monte prod.
 }
 
 resource "aws_s3_bucket_public_access_block" "site" {

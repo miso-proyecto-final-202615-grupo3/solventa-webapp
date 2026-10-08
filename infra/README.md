@@ -33,21 +33,25 @@ si se intenta crear uno duplicado para la misma URL.
 
 ## Después del apply
 
+Este stack es el ambiente **dev** (`var.environment = "dev"`, prefija todos
+los nombres de recursos — bucket, rol, OAC — para no chocar con un futuro
+stack de prod en la misma cuenta).
+
 `terraform apply` imprime los outputs: `bucket_name`, `distribution_id`,
 `distribution_domain_name`, `deploy_role_arn` (también disponibles después
 con `terraform output`).
 
-Cargar esos valores como **repository variables** (no secrets, no son
-sensibles) en GitHub → Settings → Secrets and variables → Actions → Variables:
+1. Crear el environment `dev` en GitHub → Settings → Environments.
+2. Cargar los outputs ahí como **environment variables** de `dev` (no
+   repository variables — así, cuando exista prod, cada environment tiene
+   su propio bucket/rol sin pisarse):
+   - `AWS_DEPLOY_ROLE_ARN` = `deploy_role_arn`
+   - `AWS_REGION` = región usada (`us-east-1` por defecto, variable `aws_region`)
+   - `AWS_S3_BUCKET` = `bucket_name`
+   - `AWS_CLOUDFRONT_DISTRIBUTION_ID` = `distribution_id`
 
-- `AWS_DEPLOY_ROLE_ARN` = `deploy_role_arn`
-- `AWS_REGION` = región usada (`us-east-1` por defecto, variable `aws_region`)
-- `AWS_S3_BUCKET` = `bucket_name`
-- `AWS_CLOUDFRONT_DISTRIBUTION_ID` = `distribution_id`
-
-Y crear el environment `production` en GitHub (Settings → Environments) —
-`deploy.yml` lo referencia; sirve para agregar un approval gate si se quiere
-más adelante.
+`deploy.yml` ya referencia `environment: dev`, así que toma esas variables
+automáticamente.
 
 ## Cambios subsiguientes
 

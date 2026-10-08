@@ -1,3 +1,9 @@
+variable "environment" {
+  description = "Nombre del ambiente (dev/prod). Prefija nombres de recursos para que no choquen si se agrega otro ambiente despues en la misma cuenta."
+  type        = string
+  default     = "dev"
+}
+
 variable "aws_region" {
   description = "Región AWS donde se crea el bucket y el rol (CloudFront es global)."
   type        = string
