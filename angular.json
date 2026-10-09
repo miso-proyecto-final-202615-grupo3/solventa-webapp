@@ -3,7 +3,8 @@
   "version": 1,
   "cli": {
     "packageManager": "npm",
-    "schematicCollections": ["angular-eslint"]
+    "schematicCollections": ["angular-eslint"],
+    "analytics": "241fff98-0911-4190-a635-b95bdc431d6b"
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -69,7 +70,17 @@
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@angular/build:unit-test"
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "coverage": true,
+            "coverageReporters": ["text-summary", "lcov"],
+            "coverageThresholds": {
+              "statements": 70,
+              "branches": 70,
+              "functions": 70,
+              "lines": 70
+            }
+          }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
