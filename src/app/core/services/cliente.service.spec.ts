@@ -53,4 +53,32 @@ describe('ClienteService', () => {
       fecha_actualizacion: '2026-10-10T22:12:41',
     });
   });
+
+  it('debe propagar un error 409 del servidor', () => {
+    service.registrar(PAYLOAD).subscribe({
+      error: (err: { status: number }) => {
+        expect(err.status).toBe(409);
+      },
+    });
+
+    const request = httpMock.expectOne('/api/v1/identity-service/clientes/registro');
+    request.flush(
+      { detail: 'Ya existe un cliente con ese correo.' },
+      { status: 409, statusText: 'Conflict' },
+    );
+  });
+
+  it('debe propagar errores de red', () => {
+    service.registrar(PAYLOAD).subscribe({
+      error: (err: { status: number }) => {
+        expect(err.status).toBe(0);
+      },
+    });
+
+    const request = httpMock.expectOne('/api/v1/identity-service/clientes/registro');
+    request.flush(new ErrorEvent('Network error'), {
+      status: 0,
+      statusText: 'Unknown Error',
+    });
+  });
 });
