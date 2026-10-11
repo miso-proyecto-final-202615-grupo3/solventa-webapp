@@ -1,11 +1,11 @@
-import { provideHttpClient } from '@angular/common/http';
+﻿import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ClienteService } from './cliente.service';
 
 const PAYLOAD = {
   nombres: 'Ana',
-  apellidos: 'Pérez',
+  apellidos: 'PÃ©rez',
   tipo_documento: 'CC' as const,
   numero_identificacion: '1020304050',
   correo: 'ana.perez@example.com',
@@ -29,12 +29,12 @@ describe('ClienteService', () => {
 
   afterEach(() => httpMock.verify());
 
-  it('debe llamar a POST /api/v1/identity-service/clientes/registro', () => {
+  it('debe llamar a POST /api/v1/bff-web/clientes/registro', () => {
     service.registrar(PAYLOAD).subscribe((respuesta) => {
       expect(respuesta.correo).toBe(PAYLOAD.correo);
     });
 
-    const request = httpMock.expectOne('/api/v1/identity-service/clientes/registro');
+    const request = httpMock.expectOne('/api/v1/bff-web/clientes/registro');
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual(PAYLOAD);
 
@@ -61,7 +61,7 @@ describe('ClienteService', () => {
       },
     });
 
-    const request = httpMock.expectOne('/api/v1/identity-service/clientes/registro');
+    const request = httpMock.expectOne('/api/v1/bff-web/clientes/registro');
     request.flush(
       { detail: 'Ya existe un cliente con ese correo.' },
       { status: 409, statusText: 'Conflict' },
@@ -75,7 +75,7 @@ describe('ClienteService', () => {
       },
     });
 
-    const request = httpMock.expectOne('/api/v1/identity-service/clientes/registro');
+    const request = httpMock.expectOne('/api/v1/bff-web/clientes/registro');
     request.flush(new ErrorEvent('Network error'), {
       status: 0,
       statusText: 'Unknown Error',

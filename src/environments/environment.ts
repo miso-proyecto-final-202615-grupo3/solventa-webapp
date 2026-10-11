@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: '/api/v1/identity-service',
+  apiUrl: '/api/v1/bff-web',
 };

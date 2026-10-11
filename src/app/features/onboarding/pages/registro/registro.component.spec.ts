@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+﻿import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
@@ -6,11 +6,11 @@ import { vi } from 'vitest';
 import { ClienteResponse } from '../../../../core/models/cliente';
 import { RegistroComponent } from './registro.component';
 
-const URL = '/api/v1/identity-service/clientes/registro';
+const URL = '/api/v1/bff-web/clientes/registro';
 
 const VALID = {
   nombres: 'Ana',
-  apellidos: 'Pérez',
+  apellidos: 'PÃ©rez',
   tipo_documento: 'CC' as const,
   numero_identificacion: '1020304050',
   correo: 'ana.perez@example.com',
@@ -62,7 +62,7 @@ describe('RegistroComponent', () => {
     return { fixture, component };
   }
 
-  it('mantiene el botón bloqueado hasta completar el formulario', () => {
+  it('mantiene el botÃ³n bloqueado hasta completar el formulario', () => {
     const { fixture, component } = crearComponente();
 
     expect(submitButton(fixture).disabled).toBe(true);
@@ -72,42 +72,42 @@ describe('RegistroComponent', () => {
     expect(submitButton(fixture).disabled).toBe(false);
   });
 
-  it('bloquea el botón si el correo es inválido', () => {
+  it('bloquea el botÃ³n si el correo es invÃ¡lido', () => {
     const { fixture, component } = crearComponente();
     component.form.patchValue({ ...VALID, correo: 'no-es-correo' });
     fixture.detectChanges();
     expect(submitButton(fixture).disabled).toBe(true);
   });
 
-  it('bloquea el botón si la fecha de nacimiento es futura', () => {
+  it('bloquea el botÃ³n si la fecha de nacimiento es futura', () => {
     const { fixture, component } = crearComponente();
     component.form.patchValue({ ...VALID, fecha_nacimiento: '2999-01-01' });
     fixture.detectChanges();
     expect(submitButton(fixture).disabled).toBe(true);
   });
 
-  it('bloquea el botón si el teléfono no es válido', () => {
+  it('bloquea el botÃ³n si el telÃ©fono no es vÃ¡lido', () => {
     const { fixture, component } = crearComponente();
     component.form.patchValue({ ...VALID, telefono: 'telefono' });
     fixture.detectChanges();
     expect(submitButton(fixture).disabled).toBe(true);
   });
 
-  it('bloquea el botón si la contraseña es corta', () => {
+  it('bloquea el botÃ³n si la contraseÃ±a es corta', () => {
     const { fixture, component } = crearComponente();
     component.form.patchValue({ ...VALID, password: 'corta' });
     fixture.detectChanges();
     expect(submitButton(fixture).disabled).toBe(true);
   });
 
-  it('bloquea el botón si faltan campos obligatorios', () => {
+  it('bloquea el botÃ³n si faltan campos obligatorios', () => {
     const { fixture, component } = crearComponente();
     component.form.patchValue({ ...VALID, pais_residencia: '' });
     fixture.detectChanges();
     expect(submitButton(fixture).disabled).toBe(true);
   });
 
-  it('pone el estado enviando durante la petición y lo limpia al terminar', async () => {
+  it('pone el estado enviando durante la peticiÃ³n y lo limpia al terminar', async () => {
     const { component } = crearComponente();
     component.form.setValue(VALID);
 
@@ -161,7 +161,7 @@ describe('RegistroComponent', () => {
 
     httpMock
       .expectOne(URL)
-      .flush({ detail: 'Validación falló' }, { status: 422, statusText: 'Unprocessable Entity' });
+      .flush({ detail: 'ValidaciÃ³n fallÃ³' }, { status: 422, statusText: 'Unprocessable Entity' });
     await pending;
 
     expect(component.error()).toContain('Revisa los datos del formulario');
@@ -181,7 +181,7 @@ describe('RegistroComponent', () => {
     expect(component.error()).toContain('temporalmente no disponible');
   });
 
-  it('muestra error genérico ante fallo de red', async () => {
+  it('muestra error genÃ©rico ante fallo de red', async () => {
     const { component } = crearComponente();
     component.form.setValue(VALID);
 
@@ -195,7 +195,7 @@ describe('RegistroComponent', () => {
     expect(component.error()).toContain('error inesperado');
   });
 
-  it('no registra si el formulario es inválido', () => {
+  it('no registra si el formulario es invÃ¡lido', () => {
     const { component } = crearComponente();
 
     component.confirmar();
