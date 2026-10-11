@@ -44,3 +44,11 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id "${{ vars.AWS_CLOUDFRONT_DISTRIBUTION_ID }}" \
             --paths "/*"
+
+      - name: Smoke test post-deploy
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          npm run e2e
+        env:
+          E2E_BASE_URL: ${{ vars.DEV_URL }}
