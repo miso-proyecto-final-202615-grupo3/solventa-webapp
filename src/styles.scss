@@ -6,3 +6,16 @@
 @use 'assets/styles/tokens/borders.css';
 @use 'assets/styles/tokens/motion.css';
 @use 'assets/styles/tokens/fonts.css';
+@use 'assets/styles/components';
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--text-body);
+  background: var(--surface-base);
+}
