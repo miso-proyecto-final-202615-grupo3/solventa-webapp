@@ -1,0 +1,107 @@
+<form class="registro" [formGroup]="form" (ngSubmit)="confirmar()" novalidate>
+  <h1 class="registro__title">Regístrate en Solventa</h1>
+  <p class="registro__intro">Ingresa tus datos básicos para iniciar tu vinculación.</p>
+
+  @if (error()) {
+    <p class="registro__error" role="alert">{{ error() }}</p>
+  }
+
+  <div class="registro__grid">
+    <label class="registro__field">
+      <span class="registro__label">Nombres</span>
+      <input
+        class="registro__control"
+        formControlName="nombres"
+        type="text"
+        autocomplete="given-name"
+        required
+      />
+    </label>
+
+    <label class="registro__field">
+      <span class="registro__label">Apellidos</span>
+      <input
+        class="registro__control"
+        formControlName="apellidos"
+        type="text"
+        autocomplete="family-name"
+        required
+      />
+    </label>
+
+    <label class="registro__field">
+      <span class="registro__label">Tipo de documento</span>
+      <select class="registro__control" formControlName="tipo_documento">
+        <option value="CC">Cédula de ciudadanía (CC)</option>
+      </select>
+    </label>
+
+    <label class="registro__field">
+      <span class="registro__label">Número de identificación</span>
+      <input
+        class="registro__control"
+        formControlName="numero_identificacion"
+        type="text"
+        autocomplete="off"
+        required
+      />
+    </label>
+
+    <label class="registro__field">
+      <span class="registro__label">Correo electrónico</span>
+      <input
+        class="registro__control"
+        formControlName="correo"
+        type="email"
+        autocomplete="email"
+        required
+      />
+    </label>
+
+    <label class="registro__field">
+      <span class="registro__label">Contraseña</span>
+      <input
+        class="registro__control"
+        formControlName="password"
+        type="password"
+        autocomplete="new-password"
+        required
+      />
+    </label>
+
+    <label class="registro__field">
+      <span class="registro__label">Fecha de nacimiento</span>
+      <input class="registro__control" formControlName="fecha_nacimiento" type="date" required />
+    </label>
+
+    <label class="registro__field">
+      <span class="registro__label">País de residencia</span>
+      <input
+        class="registro__control"
+        formControlName="pais_residencia"
+        type="text"
+        autocomplete="country-name"
+        required
+      />
+    </label>
+
+    <label class="registro__field">
+      <span class="registro__label">Teléfono de contacto</span>
+      <input
+        class="registro__control"
+        formControlName="telefono"
+        type="tel"
+        autocomplete="tel"
+        required
+      />
+    </label>
+  </div>
+
+  <button class="registro__submit" type="submit" [disabled]="form.invalid || enviando()">
+    @if (enviando()) {
+      <span>Enviando…</span>
+    } @else {
+      <span>Confirmar</span>
+    }
+  </button>
+</form>

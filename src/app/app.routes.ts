@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { RegistroComponent } from './features/onboarding/pages/registro/registro.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -8,4 +9,5 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
   },
   { path: '**', redirectTo: 'login' },
+  { path: 'registro', component: RegistroComponent },
 ];
