@@ -1,9 +1,13 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './features/cliente/pages/home/home.component';
 import { RegistroComponent } from './features/onboarding/pages/registro/registro.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', pathMatch: 'full', redirectTo: 'login' },
+  {
+    path: 'login',
+    title: 'Entra a tu cuenta · Solventa',
+    loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
+  },
+  { path: '**', redirectTo: 'login' },
   { path: 'registro', component: RegistroComponent },
-  { path: '**', redirectTo: '' },
 ];
