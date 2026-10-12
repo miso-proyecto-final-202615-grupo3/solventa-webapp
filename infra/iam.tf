@@ -14,12 +14,12 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
       values   = ["sts.amazonaws.com"]
     }
 
-    # Dev despliega solo desde main (unico trigger de deploy.yml). Si se
-    # agrega un ambiente prod con su propio rol, este sigue acotado a main.
+    # Dev despliega solo desde la rama dev (unico trigger de deploy.yml).
+    # Cuando se monte el ambiente prod, su propio stack/rol se acota a main.
     condition {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:${var.github_repo}:ref:refs/heads/main"]
+      values   = ["repo:${var.github_repo}:ref:refs/heads/dev"]
     }
   }
 }

@@ -57,7 +57,7 @@ automáticamente.
 
 Cambios en la infra: `terraform plan` para revisar, `terraform apply` para
 aplicar. Cambios en la app Angular: el workflow `deploy.yml` se encarga solo
-al pushear a `main` (build + `s3 sync` + invalidación de CloudFront).
+al pushear a `dev` (build + `s3 sync` + invalidación de CloudFront).
 
 ## Archivos
 
