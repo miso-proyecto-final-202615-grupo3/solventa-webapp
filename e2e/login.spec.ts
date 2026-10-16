@@ -19,6 +19,13 @@ test.describe('Login', () => {
     await expect(page).toHaveURL(/\/login$/);
   });
 
+  test('Crear cuenta abre el formulario de registro', async ({ page }) => {
+    await page.getByRole('link', { name: 'Crear cuenta' }).click();
+
+    await expect(page).toHaveURL(/\/registro$/);
+    await expect(page.getByRole('heading', { name: 'Regístrate en Solventa' })).toBeVisible();
+  });
+
   test('enviar vacío muestra errores de validación accesibles', async ({ page }) => {
     await page.getByRole('button', { name: 'Entrar' }).click();
 

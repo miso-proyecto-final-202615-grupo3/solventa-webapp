@@ -8,6 +8,6 @@ export const routes: Routes = [
     title: 'Entra a tu cuenta · Solventa',
     loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
   },
-  { path: '**', redirectTo: 'login' },
   { path: 'registro', component: RegistroComponent },
+  { path: '**', redirectTo: 'login' },
 ];
