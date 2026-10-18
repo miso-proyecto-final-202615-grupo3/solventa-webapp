@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -6,6 +7,33 @@ export const routes: Routes = [
     path: 'login',
     title: 'Entra a tu cuenta · Solventa',
     loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
+  },
+  {
+    path: 'cliente',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/cliente/shell/cliente-shell.component').then(
+        (m) => m.ClienteShellComponent,
+      ),
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'polizas' },
+      {
+        path: 'polizas',
+        title: 'Pólizas · Solventa',
+        data: { kicker: 'cartera', titulo: 'Mis pólizas' },
+        loadComponent: () =>
+          import('./features/cliente/pages/polizas/polizas.component').then(
+            (m) => m.PolizasComponent,
+          ),
+      },
+      {
+        path: 'perfil',
+        title: 'Perfil · Solventa',
+        data: { kicker: 'perfil', titulo: 'Tratamiento de datos' },
+        loadComponent: () =>
+          import('./features/cliente/pages/perfil/perfil.component').then((m) => m.PerfilComponent),
+      },
+    ],
   },
   {
     path: 'registro',

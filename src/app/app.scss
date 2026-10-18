@@ -28,10 +28,18 @@
 }
 
 .app__main {
+  display: flex;
   flex: 1;
+  flex-direction: column;
   width: 100%;
   max-width: var(--content-max, 920px);
   margin-inline: auto;
   padding: var(--space-24, 56px) var(--gutter, 24px);
   box-sizing: border-box;
+}
+
+.app__main--libre {
+  max-width: none;
+  margin: 0;
+  padding: 0;
 }

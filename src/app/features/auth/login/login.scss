@@ -1,5 +1,12 @@
+:host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+/* Ocupa solo el alto disponible bajo la cabecera, para centrar sin provocar scroll. */
 .login {
-  min-height: 100vh;
+  flex: 1;
   display: grid;
   place-items: center;
   padding: var(--space-10) var(--space-6);
