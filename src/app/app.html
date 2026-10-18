@@ -1,8 +1,10 @@
-<div class="app">
-  <header class="app__header">
-    <span class="app__brand">Solventa</span>
-  </header>
-  <main class="app__main">
+<div class="app" [class.app--portal]="portal()">
+  @if (!portal()) {
+    <header class="app__header">
+      <span class="app__brand">Solventa</span>
+    </header>
+  }
+  <main class="app__main" [class.app__main--libre]="portal()">
     <router-outlet />
   </main>
 </div>

@@ -1,0 +1,38 @@
+<div class="shell">
+  <nav class="shell__nav" aria-label="Secciones del portal">
+    <div class="shell__marca">Solventa</div>
+    <ul class="shell__lista">
+      @for (item of menu; track item.etiqueta) {
+        <li>
+          @if (item.ruta) {
+            <a
+              class="shell__item"
+              [routerLink]="item.ruta"
+              routerLinkActive="shell__item--activo"
+              ariaCurrentWhenActive="page"
+              >{{ item.etiqueta }}</a
+            >
+          } @else {
+            <span class="shell__item shell__item--pronto" aria-disabled="true"
+              >{{ item.etiqueta }} <small>Pronto</small></span
+            >
+          }
+        </li>
+      }
+    </ul>
+    <div class="shell__pie">{{ correo }}</div>
+  </nav>
+
+  <div class="shell__cuerpo">
+    <header class="shell__barra">
+      <div>
+        <p class="kicker">{{ encabezado().kicker }}</p>
+        <p class="shell__titulo">{{ encabezado().titulo }}</p>
+      </div>
+      <button class="shell__salir" type="button" (click)="cerrarSesion()">Cerrar sesión</button>
+    </header>
+    <div class="shell__pagina">
+      <router-outlet />
+    </div>
+  </div>
+</div>

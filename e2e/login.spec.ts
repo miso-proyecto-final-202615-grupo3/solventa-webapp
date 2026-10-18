@@ -48,16 +48,38 @@ test.describe('Login', () => {
     await expect(password).toHaveAttribute('type', 'password');
   });
 
-  test('credenciales válidas no muestran error y salen de la pantalla de login', async ({
-    page,
-  }) => {
+  test('credenciales válidas llevan a /cliente/polizas', async ({ page }) => {
+    await page.route('**/api/v1/bff-web/clientes/autenticar', (route) =>
+      route.fulfill({
+        status: 200,
+        json: { access_token: 'tok', id_token: 'id', token_type: 'Bearer' },
+      }),
+    );
     await page.getByLabel('Correo').fill('cliente@correo.com');
     await page.getByLabel('Contraseña').fill('secreto');
     await page.getByRole('button', { name: 'Entrar' }).click();
 
-    await expect(page.getByRole('alert')).toHaveCount(0);
-    // TODO: cuando exista /cliente/polizas, afirmar la URL de destino.
-    // Hasta entonces la ruta comodín devuelve al login, pero el servicio ya quedó autenticado.
-    await expect(page.getByRole('button', { name: 'Entrar' })).toBeEnabled();
+    await expect(page).toHaveURL(/\/cliente\/polizas$/);
+    await expect(
+      page.getByRole('heading', { name: 'Aún no tienes pólizas activas' }),
+    ).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Registrarme' })).toHaveCount(0);
+  });
+
+  test('credenciales incorrectas muestran error y se queda en /login', async ({ page }) => {
+    await page.route('**/api/v1/bff-web/clientes/autenticar', (route) =>
+      route.fulfill({ status: 401, json: { detail: 'Credenciales inválidas.' } }),
+    );
+    await page.getByLabel('Correo').fill('cliente@correo.com');
+    await page.getByLabel('Contraseña').fill('mala');
+    await page.getByRole('button', { name: 'Entrar' }).click();
+
+    await expect(page.getByRole('alert')).toContainText('Correo o contraseña incorrectos.');
+    await expect(page).toHaveURL(/\/login$/);
+  });
+
+  test('/cliente/polizas sin sesión redirige a /login', async ({ page }) => {
+    await page.goto('/cliente/polizas');
+    await expect(page).toHaveURL(/\/login$/);
   });
 });
