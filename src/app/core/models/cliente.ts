@@ -8,6 +8,8 @@ export interface ClienteCreate {
   fecha_nacimiento: string;
   pais_residencia: string;
   telefono: string;
+  /** El backend audita la aceptación en el mismo registro (HU1.1.2). */
+  consentimiento_datos: boolean;
 }
 
 export interface ClienteResponse {

@@ -1,0 +1,24 @@
+.terminos {
+  max-width: 720px;
+  font-size: var(--size-body, 16px);
+  line-height: var(--leading-body, 1.55);
+}
+
+.terminos__title {
+  margin: 0 0 var(--space-3, 8px);
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: var(--size-h2, 30px);
+  line-height: var(--leading-heading, 1.2);
+  color: var(--slv-ink, #101b2d);
+}
+
+.terminos__version {
+  margin: 0 0 var(--space-10, 24px);
+  color: var(--slv-ink-soft, #55607a);
+}
+
+.terminos__back {
+  display: inline-block;
+  margin-top: var(--space-10, 24px);
+  color: var(--slv-cobalto, #1b3a6b);
+}
