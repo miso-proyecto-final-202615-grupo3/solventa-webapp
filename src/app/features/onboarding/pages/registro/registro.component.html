@@ -1,107 +1,210 @@
-<form class="registro" [formGroup]="form" (ngSubmit)="confirmar()" novalidate>
-  <h1 class="registro__title">Regístrate en Solventa</h1>
-  <p class="registro__intro">Ingresa tus datos básicos para iniciar tu vinculación.</p>
+<form class="registro" [formGroup]="form" (ngSubmit)="$event.preventDefault()" novalidate>
+  <p class="registro__step" aria-live="polite">Paso {{ paso() }} de 2</p>
 
   @if (error()) {
     <p class="registro__error" role="alert">{{ error() }}</p>
   }
 
-  <div class="registro__grid">
-    <label class="registro__field">
-      <span class="registro__label">Nombres</span>
-      <input
-        class="registro__control"
-        formControlName="nombres"
-        type="text"
-        autocomplete="given-name"
-        required
-      />
-    </label>
+  @switch (paso()) {
+    @case (1) {
+      <h1 class="registro__title">Cuéntanos quién eres</h1>
+      <p class="registro__intro">Ingresa tus datos básicos para iniciar tu vinculación.</p>
 
-    <label class="registro__field">
-      <span class="registro__label">Apellidos</span>
-      <input
-        class="registro__control"
-        formControlName="apellidos"
-        type="text"
-        autocomplete="family-name"
-        required
-      />
-    </label>
+      <div class="registro__grid">
+        <label class="registro__field">
+          <span class="registro__label">Nombres</span>
+          <input
+            class="registro__control"
+            formControlName="nombres"
+            type="text"
+            autocomplete="given-name"
+            required
+          />
+        </label>
 
-    <label class="registro__field">
-      <span class="registro__label">Tipo de documento</span>
-      <select class="registro__control" formControlName="tipo_documento">
-        <option value="CC">Cédula de ciudadanía (CC)</option>
-      </select>
-    </label>
+        <label class="registro__field">
+          <span class="registro__label">Apellidos</span>
+          <input
+            class="registro__control"
+            formControlName="apellidos"
+            type="text"
+            autocomplete="family-name"
+            required
+          />
+        </label>
 
-    <label class="registro__field">
-      <span class="registro__label">Número de identificación</span>
-      <input
-        class="registro__control"
-        formControlName="numero_identificacion"
-        type="text"
-        autocomplete="off"
-        required
-      />
-    </label>
+        <label class="registro__field">
+          <span class="registro__label">Tipo de documento</span>
+          <select class="registro__control" formControlName="tipo_documento">
+            <option value="CC">Cédula de ciudadanía (CC)</option>
+          </select>
+        </label>
 
-    <label class="registro__field">
-      <span class="registro__label">Correo electrónico</span>
-      <input
-        class="registro__control"
-        formControlName="correo"
-        type="email"
-        autocomplete="email"
-        required
-      />
-    </label>
+        <label class="registro__field">
+          <span class="registro__label">Número de identificación</span>
+          <input
+            appSoloDigitos
+            class="registro__control"
+            formControlName="numero_identificacion"
+            type="text"
+            maxlength="10"
+            placeholder="Solo números, entre 5 y 10 dígitos"
+            [attr.aria-invalid]="mostrarError('numero_identificacion')"
+            required
+          />
+          @if (mostrarError('numero_identificacion')) {
+            <span class="registro__ayuda">Ingresa solo números, entre 5 y 10 dígitos.</span>
+          }
+        </label>
 
-    <label class="registro__field">
-      <span class="registro__label">Contraseña</span>
-      <input
-        class="registro__control"
-        formControlName="password"
-        type="password"
-        autocomplete="new-password"
-        required
-      />
-    </label>
+        <label class="registro__field">
+          <span class="registro__label">Correo electrónico</span>
+          <input
+            class="registro__control"
+            formControlName="correo"
+            type="email"
+            autocomplete="email"
+            placeholder="nombre@dominio.com"
+            [attr.aria-invalid]="mostrarError('correo')"
+            required
+          />
+          @if (mostrarError('correo')) {
+            <span class="registro__ayuda"
+              >Ingresa un correo válido, como nombre&#64;dominio.com.</span
+            >
+          }
+        </label>
 
-    <label class="registro__field">
-      <span class="registro__label">Fecha de nacimiento</span>
-      <input class="registro__control" formControlName="fecha_nacimiento" type="date" required />
-    </label>
+        <label class="registro__field">
+          <span class="registro__label">Fecha de nacimiento</span>
+          <input
+            class="registro__control"
+            formControlName="fecha_nacimiento"
+            type="date"
+            [max]="fechaMaxima"
+            min="1900-01-01"
+            [attr.aria-invalid]="mostrarError('fecha_nacimiento')"
+            required
+          />
+          @if (mostrarError('fecha_nacimiento')) {
+            <span class="registro__ayuda">{{ mensajeFechaNacimiento() }}</span>
+          }
+        </label>
 
-    <label class="registro__field">
-      <span class="registro__label">País de residencia</span>
-      <input
-        class="registro__control"
-        formControlName="pais_residencia"
-        type="text"
-        autocomplete="country-name"
-        required
-      />
-    </label>
+        <label class="registro__field">
+          <span class="registro__label">País de residencia</span>
+          <input
+            class="registro__control"
+            formControlName="pais_residencia"
+            type="text"
+            list="registro-paises"
+            autocomplete="off"
+            placeholder="Escribe para buscar"
+            [attr.aria-invalid]="mostrarError('pais_residencia')"
+            required
+          />
+          <datalist id="registro-paises">
+            @for (pais of paises; track pais) {
+              <option [value]="pais"></option>
+            }
+          </datalist>
+          @if (mostrarError('pais_residencia')) {
+            <span class="registro__ayuda">Selecciona un país de la lista.</span>
+          }
+        </label>
 
-    <label class="registro__field">
-      <span class="registro__label">Teléfono de contacto</span>
-      <input
-        class="registro__control"
-        formControlName="telefono"
-        type="tel"
-        autocomplete="tel"
-        required
-      />
-    </label>
-  </div>
+        <label class="registro__field">
+          <span class="registro__label">Teléfono de contacto</span>
+          <input
+            appSoloDigitos
+            class="registro__control"
+            formControlName="telefono"
+            type="tel"
+            maxlength="15"
+            placeholder="Solo números, sin espacios"
+            [attr.aria-invalid]="mostrarError('telefono')"
+            required
+          />
+          @if (mostrarError('telefono')) {
+            <span class="registro__ayuda">Ingresa solo números, entre 7 y 15 dígitos.</span>
+          }
+        </label>
+      </div>
 
-  <button class="registro__submit" type="submit" [disabled]="form.invalid || enviando()">
-    @if (enviando()) {
-      <span>Enviando…</span>
-    } @else {
-      <span>Confirmar</span>
+      <label class="registro__consent">
+        <input type="checkbox" [formControl]="aceptaTerminos" />
+        <span>
+          Acepto de forma explícita el tratamiento de mis datos personales según los
+          <a href="/terminos" target="_blank" rel="noopener">
+            términos de consentimiento y las políticas de Open Finance</a
+          >.
+        </span>
+      </label>
+
+      <div class="registro__actions">
+        <button
+          class="registro__submit"
+          type="button"
+          [disabled]="!paso1Valido()"
+          (click)="continuarPaso1()"
+        >
+          Continuar
+        </button>
+        <button class="registro__secondary" type="button" (click)="cancelar()">Cancelar</button>
+      </div>
     }
-  </button>
+
+    @case (2) {
+      <h1 class="registro__title">Crea tu contraseña</h1>
+      <p class="registro__intro">Con ella entrarás a tu cuenta junto con tu correo.</p>
+
+      <div class="registro__field registro__field--clave">
+        <label class="registro__label" for="registro-password">Contraseña</label>
+        <div class="registro__clave">
+          <input
+            id="registro-password"
+            class="registro__control"
+            formControlName="password"
+            [type]="verClave() ? 'text' : 'password'"
+            autocomplete="new-password"
+            required
+          />
+          <button class="registro__toggle" type="button" (click)="alternarClave()">
+            {{ verClave() ? 'Ocultar' : 'Mostrar' }}
+          </button>
+        </div>
+      </div>
+
+      <ul class="registro__requisitos" aria-label="Requisitos de la contraseña">
+        @for (requisito of requisitosClave(); track requisito.texto) {
+          <li [class.registro__requisito--ok]="requisito.cumple">
+            {{ requisito.cumple ? '✓' : '•' }} {{ requisito.texto }}
+          </li>
+        }
+      </ul>
+
+      <div class="registro__actions">
+        <button
+          class="registro__submit"
+          type="button"
+          [disabled]="!paso2Valido() || enviando()"
+          (click)="crearCuenta()"
+        >
+          @if (enviando()) {
+            <span>Enviando…</span>
+          } @else {
+            <span>Crear cuenta</span>
+          }
+        </button>
+        <button
+          class="registro__secondary"
+          type="button"
+          [disabled]="enviando()"
+          (click)="volverPaso1()"
+        >
+          Volver
+        </button>
+      </div>
+    }
+  }
 </form>
