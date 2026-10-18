@@ -1,6 +1,16 @@
 services:
   web:
     build: .
+    container_name: solventa-webapp
     ports:
-      - '8080:80'
+      - '4200:80'
     restart: unless-stopped
+    networks:
+      - default
+      - backend
+
+networks:
+  # Red del stack del backend (docker compose up en solventa-backend) para alcanzar bff_web.
+  backend:
+    name: solventa-backend_default
+    external: true
