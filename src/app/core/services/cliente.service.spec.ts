@@ -12,7 +12,8 @@ const PAYLOAD = {
   password: 'Secreta123',
   fecha_nacimiento: '1990-05-15',
   pais_residencia: 'Colombia',
-  telefono: '+573001234567',
+  telefono: '3001234567',
+  consentimiento_datos: true,
 };
 
 describe('ClienteService', () => {

@@ -1,3 +1,5 @@
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { Login } from './login';
@@ -6,12 +8,17 @@ describe('Login', () => {
   async function setup() {
     await TestBed.configureTestingModule({
       imports: [Login],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
     const fixture = TestBed.createComponent(Login);
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
-    return { fixture, el, router: TestBed.inject(Router) };
+    return {
+      fixture,
+      el,
+      router: TestBed.inject(Router),
+      http: TestBed.inject(HttpTestingController),
+    };
   }
 
   function fill(el: HTMLElement, email: string, password: string) {
@@ -56,11 +63,28 @@ describe('Login', () => {
   });
 
   it('navigates on valid submit', async () => {
-    const { fixture, el, router } = await setup();
+    const { fixture, el, router, http } = await setup();
     const nav = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
     fill(el, 'camila.rojas@correo.com', 'secreto');
     submit(el);
+    http
+      .expectOne('/api/v1/bff-web/clientes/autenticar')
+      .flush({ access_token: 'tok', id_token: 'id', token_type: 'Bearer' });
     await fixture.whenStable();
     expect(nav).toHaveBeenCalledWith('/cliente/polizas');
+  });
+
+  it('shows an error and stays on the page when credentials are wrong', async () => {
+    const { fixture, el, router, http } = await setup();
+    const nav = vi.spyOn(router, 'navigateByUrl');
+    fill(el, 'camila.rojas@correo.com', 'mala');
+    submit(el);
+    http
+      .expectOne('/api/v1/bff-web/clientes/autenticar')
+      .flush({ detail: 'Credenciales inválidas.' }, { status: 401, statusText: 'Unauthorized' });
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(el.textContent).toContain('Correo o contraseña incorrectos.');
+    expect(nav).not.toHaveBeenCalled();
   });
 });

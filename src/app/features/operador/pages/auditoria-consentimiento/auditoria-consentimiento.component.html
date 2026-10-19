@@ -1,0 +1,73 @@
+<section class="auditoria">
+  <h1 class="auditoria__title">Auditoría de consentimientos</h1>
+  <p class="auditoria__intro">
+    Consulta el historial de consentimientos de un cliente. Solo lectura.
+  </p>
+
+  <form class="auditoria__form" [formGroup]="form" (ngSubmit)="buscar()" novalidate>
+    <label class="auditoria__field">
+      <span class="auditoria__label">Buscar por</span>
+      <select class="auditoria__control" formControlName="criterio">
+        <option value="identificacion">Número de identidad</option>
+        <option value="correo">Correo</option>
+      </select>
+    </label>
+
+    <label class="auditoria__field auditoria__field--grow">
+      <span class="auditoria__label">Valor</span>
+      <input class="auditoria__control" formControlName="valor" type="text" required />
+    </label>
+
+    <button class="auditoria__submit" type="submit" [disabled]="form.invalid || buscando()">
+      Buscar
+    </button>
+  </form>
+
+  @if (error()) {
+    <p class="auditoria__error" role="alert">{{ error() }}</p>
+  }
+
+  @if (resultado(); as res) {
+    <div class="auditoria__cliente">
+      <p>
+        <strong>{{ res.cliente.nombres }} {{ res.cliente.apellidos }}</strong>
+      </p>
+      <p>{{ res.cliente.tipo_documento }} {{ res.cliente.numero_identificacion }}</p>
+      <p>{{ res.cliente.correo }}</p>
+      <p>
+        Estado actual:
+        <span class="auditoria__estado">{{
+          res.cliente.estado_consentimiento ?? 'Sin registro'
+        }}</span>
+      </p>
+    </div>
+
+    @if (res.eventos.length === 0) {
+      <p class="auditoria__vacio">Este cliente aún no tiene consentimientos registrados.</p>
+    } @else {
+      <table class="auditoria__tabla">
+        <caption class="auditoria__caption">
+          Más reciente primero
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Acción</th>
+            <th scope="col">Fecha y hora</th>
+            <th scope="col">Versión de términos</th>
+            <th scope="col">Canal</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (evento of res.eventos; track evento.id) {
+            <tr>
+              <td>{{ etiquetaAccion(evento.tipo_accion) }}</td>
+              <td>{{ evento.fecha | date: 'yyyy-MM-dd HH:mm:ss z' }}</td>
+              <td>{{ evento.version_terminos }}</td>
+              <td>{{ evento.canal }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  }
+</section>

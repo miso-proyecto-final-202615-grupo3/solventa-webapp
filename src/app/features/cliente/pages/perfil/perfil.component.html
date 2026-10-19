@@ -1,0 +1,110 @@
+<section class="perfil">
+  <p class="kicker">versión {{ version }}</p>
+  <h1 class="perfil__title">Tratamiento de datos personales</h1>
+
+  <h2 class="perfil__subtitle">Para qué usamos tus datos</h2>
+  <ul class="perfil__finalidades">
+    @for (f of finalidades; track f.titulo) {
+      <li class="perfil__finalidad">
+        <div>
+          <p class="perfil__finalidad-titulo">{{ f.titulo }}</p>
+          <p class="perfil__finalidad-detalle">{{ f.detalle }}</p>
+        </div>
+        <span class="perfil__tag">{{ f.obligatoria ? 'Obligatoria' : 'Opcional' }}</span>
+      </li>
+    }
+  </ul>
+  <p class="perfil__nota"><strong>Cuánto tiempo los guardamos.</strong> {{ retencion }}</p>
+
+  <h2 class="perfil__subtitle">Tu autorización</h2>
+
+  @if (cargando()) {
+    <p class="perfil__text" role="status">Cargando tu consentimiento…</p>
+  }
+
+  @if (error()) {
+    <p class="perfil__error" role="alert">{{ error() }}</p>
+  }
+
+  @if (datos(); as d) {
+    <p class="perfil__text">
+      Estado actual:
+      <strong data-testid="estado">{{ d.cliente.estado_consentimiento ?? 'Sin registro' }}</strong>
+    </p>
+
+    <p class="perfil__text">
+      @if (d.cliente.estado_consentimiento === 'ACEPTADO') {
+        Autorizas a Solventa a usar tus datos para evaluar tu perfil. Puedes revocar este permiso
+        cuando quieras.
+      } @else {
+        No has autorizado el uso de tus datos. Sin este permiso no podemos consultar tu perfil
+        financiero.
+      }
+    </p>
+
+    @if (d.cliente.estado_consentimiento === 'ACEPTADO') {
+      @if (confirmando()) {
+        <p class="perfil__text" role="alert">
+          ¿Revocar tu consentimiento? Dejaremos de consultar tu perfil financiero.
+        </p>
+        <div class="perfil__actions">
+          <button
+            class="perfil__btn perfil__btn--danger"
+            type="button"
+            [disabled]="guardando()"
+            (click)="cambiar('REVOCADO')"
+          >
+            Sí, revocar
+          </button>
+          <button
+            class="perfil__btn perfil__btn--ghost"
+            type="button"
+            [disabled]="guardando()"
+            (click)="cancelar()"
+          >
+            Volver
+          </button>
+        </div>
+      } @else {
+        <button class="perfil__btn" type="button" (click)="pedirRevocar()">
+          Revocar consentimiento
+        </button>
+      }
+    } @else {
+      <button
+        class="perfil__btn"
+        type="button"
+        [disabled]="guardando()"
+        (click)="cambiar('ACEPTADO')"
+      >
+        Aceptar consentimiento
+      </button>
+    }
+
+    <h2 class="perfil__subtitle">Historial</h2>
+    @if (d.eventos.length === 0) {
+      <p class="perfil__text">Aún no tienes movimientos registrados.</p>
+    } @else {
+      <table class="perfil__tabla">
+        <thead>
+          <tr>
+            <th scope="col">Acción</th>
+            <th scope="col">Fecha y hora</th>
+            <th scope="col">Versión de términos</th>
+            <th scope="col">Canal</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (evento of d.eventos; track evento.id) {
+            <tr>
+              <td>{{ etiquetaAccion(evento.tipo_accion) }}</td>
+              <td>{{ evento.fecha | date: 'yyyy-MM-dd HH:mm:ss z' }}</td>
+              <td>{{ evento.version_terminos }}</td>
+              <td>{{ evento.canal }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  }
+</section>
