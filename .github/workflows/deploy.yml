@@ -1,22 +1,26 @@
 name: Deploy
 
 on:
+  pull_request:
+    branches: [dev, main]
   push:
-    branches: [dev]
+    branches: [dev, main]
   workflow_dispatch:
 
 permissions:
-  id-token: write # necesario para OIDC (sin AWS keys guardadas)
   contents: read
+  id-token: write
 
 concurrency:
-  group: deploy-dev
+  group: deploy
   cancel-in-progress: false
 
 jobs:
   deploy:
+    name: Deploy webapp to ${{ github.ref_name == 'main' && 'prod' || 'dev' }} ECR
     runs-on: ubuntu-latest
-    environment: dev
+    environment: ${{ github.ref_name == 'main' && 'prod' || 'dev' }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
