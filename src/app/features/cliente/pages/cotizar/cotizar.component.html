@@ -8,6 +8,18 @@
     </p>
   </div>
 
+  @if (producto(); as detalleProducto) {
+    <section class="cotizador__product" aria-label="Detalle del producto">
+      <h2>{{ detalleProducto.nombre }}</h2>
+      <p>{{ detalleProducto.mensaje_legal }}</p>
+      <ul>
+        @for (cobertura of detalleProducto.coberturas; track cobertura.cobertura_id) {
+          <li>{{ cobertura.nombre }}</li>
+        }
+      </ul>
+    </section>
+  }
+
   @if (cargandoConsentimiento()) {
     <p class="callout" role="status">Verificando tu autorización de uso de datos…</p>
   } @else if (!consentimientoActivo()) {
@@ -89,7 +101,11 @@
         class="btn btn--primary btn--lg"
         type="submit"
         [disabled]="
-          form.invalid || cotizando() || !consentimientoActivo() || cargandoConsentimiento()
+          form.invalid ||
+          cotizando() ||
+          !consentimientoActivo() ||
+          cargandoConsentimiento() ||
+          !producto()
         "
       >
         {{ cotizando() ? 'Calculando…' : 'Calcular mi tarifa' }}
@@ -99,36 +115,43 @@
     <aside class="cotizador__resultado" aria-live="polite">
       @if (cotizacion(); as resultado) {
         <p class="kicker">estimación mensual · COP</p>
-        <h2 class="cotizador__price">{{ moneda(resultado.prima_mensual) }}</h2>
-        <p class="cotizador__source">{{ etiquetaFuente(resultado.fuente_perfil) }}</p>
+        <h2 class="cotizador__price">{{ moneda(resultado.prima_total) }}</h2>
+        <p class="cotizador__source">{{ etiquetaFuente(resultado) }}</p>
 
         <dl class="cotizador__breakdown">
           <div>
             <dt>Prima base</dt>
-            <dd>{{ moneda(resultado.desglose.prima_base) }}</dd>
+            <dd>{{ moneda(resultado.prima_base) }}</dd>
           </div>
-          <div>
-            <dt>Ajustes de perfilamiento</dt>
-            <dd>{{ moneda(resultado.desglose.ajustes) }}</dd>
-          </div>
+          @for (ajuste of resultado.ajustes; track ajuste.concepto) {
+            <div>
+              <dt>
+                {{
+                  ajuste.concepto === 'OPEN_FINANCE' ? 'Ajuste financiero' : 'Ajuste territorial'
+                }}
+              </dt>
+              <dd>{{ moneda(montoAjuste(ajuste)) }}</dd>
+            </div>
+          }
           <div>
             <dt>Prima neta</dt>
-            <dd>{{ moneda(resultado.desglose.prima_neta) }}</dd>
+            <dd>{{ moneda(resultado.prima_neta) }}</dd>
           </div>
           <div>
             <dt>IVA (19%)</dt>
-            <dd>{{ moneda(resultado.desglose.impuestos) }}</dd>
+            <dd>{{ moneda(totalImpuestos(resultado)) }}</dd>
           </div>
         </dl>
 
         <ul class="cotizador__explanations">
-          @for (explicacion of resultado.explicacion_ajustes; track explicacion) {
-            <li>{{ explicacion }}</li>
+          @for (ajuste of resultado.ajustes; track ajuste.concepto) {
+            <li>{{ ajuste.motivo }}</li>
+          }
+          @for (motivo of resultado.motivos_degradacion; track motivo) {
+            <li>{{ motivo }}</li>
           }
         </ul>
-        <p class="cotizador__validity">
-          Vigente hasta {{ resultado.vigencia_hasta | date: 'medium' }}
-        </p>
+        <p class="cotizador__validity">Vigente hasta {{ resultado.expira_en | date: 'medium' }}</p>
       } @else {
         <p class="kicker">tu estimación</p>
         <h2 class="cotizador__placeholder">La tarifa aparecerá aquí</h2>

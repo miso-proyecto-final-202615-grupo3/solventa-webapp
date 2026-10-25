@@ -5,21 +5,14 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../../../core/auth/auth.service';
-import { TERMINOS_VERSION } from '../../../../core/constants/terminos';
 import {
+  AjusteCotizacion,
   CotizarRequest,
   CotizacionResponse,
-  FuentePerfil,
+  ProductoCotizacion,
 } from '../../../../core/models/cotizacion';
 import { AuditoriaConsentimientoService } from '../../../../core/services/auditoria-consentimiento.service';
 import { CotizacionService } from '../../../../core/services/cotizacion.service';
-
-const ETIQUETAS_FUENTE: Record<FuentePerfil, string> = {
-  PROVEEDORES: 'Perfil actualizado con proveedores',
-  CACHE: 'Perfil recuperado de caché',
-  FALLBACK: 'Tarifa estándar de respaldo',
-  PARCIAL: 'Perfil parcialmente actualizado',
-};
 
 @Component({
   imports: [DatePipe, ReactiveFormsModule, RouterLink],
@@ -40,7 +33,7 @@ export class CotizarComponent implements OnInit {
   protected readonly cotizando = signal(false);
   protected readonly error = signal<string | null>(null);
   protected readonly cotizacion = signal<CotizacionResponse | null>(null);
-  protected readonly versionTerminos = TERMINOS_VERSION;
+  protected readonly producto = signal<ProductoCotizacion | null>(null);
   protected readonly form = this.fb.nonNullable.group({
     saldoCredito: [200000000, [Validators.required, Validators.min(1)]],
     municipio: ['Bogotá D.C.', [Validators.required, Validators.minLength(2)]],
@@ -56,19 +49,26 @@ export class CotizarComponent implements OnInit {
       return;
     }
 
-    try {
-      const perfil = await firstValueFrom(this.auditoria.consultar('correo', correo));
-      this.clienteId.set(perfil.cliente.id);
-      this.consentimientoActivo.set(perfil.cliente.estado_consentimiento === 'ACEPTADO');
-    } catch {
+    const [auditoria, producto] = await Promise.allSettled([
+      firstValueFrom(this.auditoria.consultar('correo', correo)),
+      firstValueFrom(this.cotizaciones.obtenerProducto('VIDA_HIPOTECARIO')),
+    ]);
+    if (auditoria.status === 'fulfilled') {
+      this.clienteId.set(auditoria.value.cliente.id);
+      this.consentimientoActivo.set(auditoria.value.cliente.estado_consentimiento === 'ACEPTADO');
+    } else {
       this.error.set('No pudimos verificar tu consentimiento. Intenta de nuevo.');
-    } finally {
-      this.cargandoConsentimiento.set(false);
     }
+    if (producto.status === 'fulfilled') {
+      this.producto.set(producto.value);
+    } else {
+      this.error.set('No pudimos cargar los detalles del producto. Intenta de nuevo.');
+    }
+    this.cargandoConsentimiento.set(false);
   }
 
   protected async cotizar(): Promise<void> {
-    if (this.form.invalid || this.cotizando() || !this.consentimientoActivo()) {
+    if (this.form.invalid || this.cotizando() || !this.consentimientoActivo() || !this.producto()) {
       this.form.markAllAsTouched();
       return;
     }
@@ -81,8 +81,7 @@ export class CotizarComponent implements OnInit {
     const valores = this.form.getRawValue();
     const payload: CotizarRequest = {
       cliente_id: clienteId,
-      ramo: 'VIDA_HIPOTECARIO',
-      consentimiento_version: this.versionTerminos,
+      producto_codigo: 'VIDA_HIPOTECARIO',
       parametros: {
         saldo_credito: valores.saldoCredito,
         ubicacion: {
@@ -105,8 +104,20 @@ export class CotizarComponent implements OnInit {
     }
   }
 
-  protected etiquetaFuente(fuente: FuentePerfil): string {
-    return ETIQUETAS_FUENTE[fuente];
+  protected etiquetaFuente(resultado: CotizacionResponse): string {
+    if (!resultado.degradada) return 'Perfil actualizado con proveedores';
+    if (resultado.motivos_degradacion.includes('OPEN_DATA_CACHE')) {
+      return 'Riesgo territorial recuperado de caché';
+    }
+    return 'Tarifa calculada con factores estándar';
+  }
+
+  protected montoAjuste(ajuste: AjusteCotizacion): number {
+    return ajuste.tipo === 'RECARGO' ? ajuste.valor : -ajuste.valor;
+  }
+
+  protected totalImpuestos(cotizacion: CotizacionResponse): number {
+    return cotizacion.impuestos.reduce((total, impuesto) => total + impuesto.valor, 0);
   }
 
   protected moneda(valor: number): string {

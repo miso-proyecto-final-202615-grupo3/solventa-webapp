@@ -5,6 +5,7 @@ import { of, throwError } from 'rxjs';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { AuditoriaConsentimientoService } from '../../../../core/services/auditoria-consentimiento.service';
 import { CotizacionService } from '../../../../core/services/cotizacion.service';
+import { ProductoCotizacion } from '../../../../core/models/cotizacion';
 import { CotizarComponent } from './cotizar.component';
 
 const AUDITORIA = {
@@ -22,19 +23,55 @@ const AUDITORIA = {
 
 const COTIZACION = {
   cotizacion_id: '3fb58ca8-f52b-4690-a645-71cde63f03be',
-  estado: 'COTIZADA' as const,
-  ramo: 'VIDA_HIPOTECARIO' as const,
+  cliente_id: AUDITORIA.cliente.id,
+  producto_codigo: 'VIDA_HIPOTECARIO' as const,
+  estado: 'EMITIDA',
   moneda: 'COP' as const,
-  prima_mensual: 48046.25,
-  desglose: {
-    prima_base: 50000,
-    ajustes: -9625,
-    prima_neta: 40375,
-    impuestos: 7671.25,
-  },
-  explicacion_ajustes: ['Descuento Open Finance', 'Descuento Open Data'],
-  fuente_perfil: 'PROVEEDORES' as const,
-  vigencia_hasta: '2026-10-25T12:00:00Z',
+  prima_base: 50000,
+  prima_neta: 40375,
+  ajustes: [
+    {
+      concepto: 'OPEN_FINANCE',
+      tipo: 'DEDUCCION' as const,
+      valor: 7500,
+      motivo: 'Descuento Open Finance',
+    },
+    {
+      concepto: 'OPEN_DATA',
+      tipo: 'DEDUCCION' as const,
+      valor: 2125,
+      motivo: 'Descuento Open Data',
+    },
+  ],
+  impuestos: [{ concepto: 'IVA', tasa: 0.19, valor: 7671.25 }],
+  prima_total: 48046.25,
+  degradada: false,
+  motivos_degradacion: [],
+  coberturas: [],
+  expira_en: '2026-10-26T12:00:00Z',
+  creada_en: '2026-10-25T12:00:00Z',
+};
+
+const PRODUCTO: ProductoCotizacion = {
+  producto_id: 'a92f99ee-a0e1-4ff2-9110-ed42e0c2ce92',
+  codigo: 'VIDA_HIPOTECARIO',
+  nombre: 'Seguro de vida hipotecario',
+  ramo: 'VIDA',
+  pais: 'CO',
+  estado: 'ACTIVO',
+  moneda: 'COP',
+  mensaje_legal: 'La cotización es informativa.',
+  fuentes_datos: ['OPEN_FINANCE', 'OPEN_DATA'],
+  parametros: [],
+  coberturas: [
+    {
+      cobertura_id: 'b0bfc70a-3332-44db-9838-88888e2701de',
+      codigo: 'FALLECIMIENTO',
+      nombre: 'Fallecimiento del asegurado',
+      limite_asegurado: 2000000000,
+      deducible: 0,
+    },
+  ],
 };
 
 describe('CotizarComponent', () => {
@@ -47,7 +84,10 @@ describe('CotizarComponent', () => {
         }),
       ),
     };
-    const cotizaciones = { cotizar: vi.fn(() => of(COTIZACION)) };
+    const cotizaciones = {
+      obtenerProducto: vi.fn(() => of(PRODUCTO)),
+      cotizar: vi.fn(() => of(COTIZACION)),
+    };
 
     await TestBed.configureTestingModule({
       imports: [CotizarComponent],
@@ -62,6 +102,7 @@ describe('CotizarComponent', () => {
     const fixture = TestBed.createComponent(CotizarComponent);
     fixture.detectChanges();
     await fixture.whenStable();
+    await new Promise((resolve) => setTimeout(resolve, 0));
     fixture.detectChanges();
     return { fixture, auditoria, cotizaciones };
   }
@@ -76,8 +117,7 @@ describe('CotizarComponent', () => {
     expect(auditoria.consultar).toHaveBeenCalledWith('correo', 'ana@example.com');
     expect(cotizaciones.cotizar).toHaveBeenCalledWith({
       cliente_id: AUDITORIA.cliente.id,
-      ramo: 'VIDA_HIPOTECARIO',
-      consentimiento_version: '1.0',
+      producto_codigo: 'VIDA_HIPOTECARIO',
       parametros: {
         saldo_credito: 200000000,
         ubicacion: { municipio: 'Bogotá D.C.', zona: 'URBANA', estrato: 4 },
@@ -85,6 +125,7 @@ describe('CotizarComponent', () => {
     });
     expect(fixture.nativeElement.textContent).toContain('48.046,25');
     expect(fixture.nativeElement.textContent).toContain('Descuento Open Finance');
+    expect(fixture.nativeElement.textContent).toContain('Seguro de vida hipotecario');
   });
 
   it('bloquea la cotización y ofrece gestionar consentimiento revocado', async () => {

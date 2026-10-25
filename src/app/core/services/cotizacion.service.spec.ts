@@ -22,8 +22,7 @@ describe('CotizacionService', () => {
   it('envía la solicitud de cotización al BFF web', () => {
     const payload = {
       cliente_id: 'c8cff57a-ff9b-444d-a4df-907c4ba2a83a',
-      ramo: 'VIDA_HIPOTECARIO' as const,
-      consentimiento_version: '1.0',
+      producto_codigo: 'VIDA_HIPOTECARIO' as const,
       parametros: {
         saldo_credito: 200000000,
         ubicacion: { municipio: 'Bogotá D.C.', zona: 'URBANA' as const, estrato: 4 },
@@ -35,6 +34,16 @@ describe('CotizacionService', () => {
     const request = httpMock.expectOne(URL);
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual(payload);
-    request.flush({ prima_mensual: 48046.25 });
+    request.flush({ prima_total: 48046.25 });
+  });
+
+  it('consulta el detalle del producto en el BFF', () => {
+    service.obtenerProducto('VIDA_HIPOTECARIO').subscribe();
+
+    const request = httpMock.expectOne(
+      `${URL.replace('/cotizaciones', '')}/productos/VIDA_HIPOTECARIO`,
+    );
+    expect(request.request.method).toBe('GET');
+    request.flush({ codigo: 'VIDA_HIPOTECARIO' });
   });
 });

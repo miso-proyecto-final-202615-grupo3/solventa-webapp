@@ -29,6 +29,36 @@
   font-size: var(--size-body-lg, 18px);
 }
 
+.cotizador__product {
+  margin: 0 0 var(--space-10, 24px);
+  padding: var(--space-7, 16px) var(--space-8, 20px);
+  border-left: 3px solid var(--accent, #d77d38);
+  background: var(--surface-primary-soft, #eef3f5);
+}
+
+.cotizador__product h2 {
+  margin: 0 0 var(--space-3, 8px);
+  color: var(--text-primary, #17324f);
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: var(--size-h3, 22px);
+}
+
+.cotizador__product p,
+.cotizador__product ul {
+  margin: 0;
+  color: var(--text-body, #26394a);
+  font-size: var(--size-caption, 13px);
+  line-height: 1.5;
+}
+
+.cotizador__product ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3, 8px) var(--space-8, 20px);
+  margin-top: var(--space-4, 10px);
+  padding-left: 1.2rem;
+}
+
 .cotizador__grid {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
