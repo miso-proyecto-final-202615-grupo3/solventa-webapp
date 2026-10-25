@@ -1,0 +1,141 @@
+<section class="cotizador">
+  <div class="cotizador__intro">
+    <p class="kicker">vida hipotecaria · estimación mensual</p>
+    <h1 class="cotizador__title">Una tarifa conectada a tu realidad</h1>
+    <p class="cotizador__lead">
+      Calculamos la prima sobre el saldo de tu crédito y, con tu autorización, consideramos tu
+      perfil financiero y el contexto de la vivienda.
+    </p>
+  </div>
+
+  @if (cargandoConsentimiento()) {
+    <p class="callout" role="status">Verificando tu autorización de uso de datos…</p>
+  } @else if (!consentimientoActivo()) {
+    <div class="callout callout--alert" role="status">
+      <p>El consentimiento Open Finance debe estar activo para cotizar.</p>
+      <a class="btn btn--secondary" routerLink="/cliente/perfil">Revisar autorización</a>
+    </div>
+  }
+
+  @if (error()) {
+    <p class="cotizador__error" role="alert">{{ error() }}</p>
+  }
+
+  <div class="cotizador__grid">
+    <form class="cotizador__form" [formGroup]="form" (ngSubmit)="cotizar()">
+      <h2 class="cotizador__subtitle">Datos del crédito</h2>
+      <p class="cotizador__hint">
+        El monto asegurado es el saldo pendiente del crédito, no el valor de la vivienda.
+      </p>
+
+      <div class="field">
+        <label for="saldo-credito">Saldo pendiente del crédito (COP)</label>
+        <input
+          id="saldo-credito"
+          class="input input--mono"
+          type="number"
+          min="1"
+          step="1"
+          formControlName="saldoCredito"
+          autocomplete="off"
+          required
+        />
+        @if (form.controls.saldoCredito.touched && form.controls.saldoCredito.invalid) {
+          <p class="field__error">Ingresa un saldo mayor que cero.</p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="municipio">Municipio de la vivienda</label>
+        <input
+          id="municipio"
+          class="input"
+          type="text"
+          formControlName="municipio"
+          autocomplete="address-level2"
+          required
+        />
+      </div>
+
+      <div class="cotizador__location">
+        <div class="field">
+          <label for="zona">Zona</label>
+          <select id="zona" class="input" formControlName="zona">
+            <option value="URBANA">Urbana</option>
+            <option value="RURAL">Rural</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="estrato">Estrato</label>
+          <input
+            id="estrato"
+            class="input"
+            type="number"
+            min="1"
+            max="6"
+            step="1"
+            formControlName="estrato"
+            required
+          />
+        </div>
+      </div>
+
+      <p class="cotizador__privacy">
+        Usaremos Open Finance solo mientras tu consentimiento esté activo. No mostramos tus datos
+        financieros en la cotización.
+      </p>
+
+      <button
+        class="btn btn--primary btn--lg"
+        type="submit"
+        [disabled]="
+          form.invalid || cotizando() || !consentimientoActivo() || cargandoConsentimiento()
+        "
+      >
+        {{ cotizando() ? 'Calculando…' : 'Calcular mi tarifa' }}
+      </button>
+    </form>
+
+    <aside class="cotizador__resultado" aria-live="polite">
+      @if (cotizacion(); as resultado) {
+        <p class="kicker">estimación mensual · COP</p>
+        <h2 class="cotizador__price">{{ moneda(resultado.prima_mensual) }}</h2>
+        <p class="cotizador__source">{{ etiquetaFuente(resultado.fuente_perfil) }}</p>
+
+        <dl class="cotizador__breakdown">
+          <div>
+            <dt>Prima base</dt>
+            <dd>{{ moneda(resultado.desglose.prima_base) }}</dd>
+          </div>
+          <div>
+            <dt>Ajustes de perfilamiento</dt>
+            <dd>{{ moneda(resultado.desglose.ajustes) }}</dd>
+          </div>
+          <div>
+            <dt>Prima neta</dt>
+            <dd>{{ moneda(resultado.desglose.prima_neta) }}</dd>
+          </div>
+          <div>
+            <dt>IVA (19%)</dt>
+            <dd>{{ moneda(resultado.desglose.impuestos) }}</dd>
+          </div>
+        </dl>
+
+        <ul class="cotizador__explanations">
+          @for (explicacion of resultado.explicacion_ajustes; track explicacion) {
+            <li>{{ explicacion }}</li>
+          }
+        </ul>
+        <p class="cotizador__validity">
+          Vigente hasta {{ resultado.vigencia_hasta | date: 'medium' }}
+        </p>
+      } @else {
+        <p class="kicker">tu estimación</p>
+        <h2 class="cotizador__placeholder">La tarifa aparecerá aquí</h2>
+        <p class="cotizador__hint">
+          Verás la prima base, los ajustes territoriales y financieros, y el IVA por separado.
+        </p>
+      }
+    </aside>
+  </div>
+</section>

@@ -33,6 +33,15 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/cliente/pages/perfil/perfil.component').then((m) => m.PerfilComponent),
       },
+      {
+        path: 'cotizar',
+        title: 'Cotizar vida hipotecaria · Solventa',
+        data: { kicker: 'cotización', titulo: 'Vida hipotecaria' },
+        loadComponent: () =>
+          import('./features/cliente/pages/cotizar/cotizar.component').then(
+            (m) => m.CotizarComponent,
+          ),
+      },
     ],
   },
   {

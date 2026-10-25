@@ -19,4 +19,12 @@ describe('routes', () => {
       expect(await (route?.loadComponent as () => Promise<unknown>)()).toBeTruthy();
     },
   );
+
+  it('carga el cotizador dentro del portal del cliente', async () => {
+    const cliente = routes.find((route) => route.path === 'cliente');
+    const cotizar = cliente?.children?.find((route) => route.path === 'cotizar');
+
+    expect(cotizar?.loadComponent).toBeDefined();
+    expect(await (cotizar?.loadComponent as () => Promise<unknown>)()).toBeTruthy();
+  });
 });
