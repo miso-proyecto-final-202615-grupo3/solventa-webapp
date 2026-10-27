@@ -1,0 +1,83 @@
+<section class="ramos">
+  <h1 class="ramos__title">Ramos de seguro disponibles</h1>
+  <p class="ramos__text">
+    Elige el ramo que quieres conocer. Puedes revisar sus condiciones antes de cotizar.
+  </p>
+
+  @if (cargando()) {
+    <p class="ramos__text" role="status">Cargando ramos…</p>
+  }
+
+  @if (error()) {
+    <p class="ramos__error" role="alert">{{ error() }}</p>
+  }
+
+  <ul class="ramos__lista" aria-label="Ramos de seguro">
+    @for (r of ramos(); track r.producto_id) {
+      <li
+        class="ramos__item"
+        [class.ramos__item--activo]="seleccionado()?.producto_id === r.producto_id"
+      >
+        <div>
+          <p class="ramos__nombre">{{ r.nombre }}</p>
+          <p class="ramos__detalle">{{ r.ramo }} · {{ r.moneda }}</p>
+        </div>
+        <div class="ramos__acciones">
+          <button class="ramos__btn ramos__btn--ghost" type="button" (click)="verCondiciones(r)">
+            Ver condiciones
+          </button>
+          <button
+            class="ramos__btn"
+            type="button"
+            [attr.aria-pressed]="seleccionado()?.producto_id === r.producto_id"
+            (click)="elegir(r)"
+          >
+            Seleccionar
+          </button>
+        </div>
+      </li>
+    }
+  </ul>
+
+  @if (seleccionado(); as s) {
+    <form class="ramos__form" data-testid="parametros" (submit)="$event.preventDefault()">
+      <h2 class="ramos__subtitle">Datos para cotizar {{ s.nombre }}</h2>
+      @for (p of s.parametros; track p.nombre) {
+        <label class="ramos__campo">
+          <span
+            >{{ p.etiqueta }}
+            @if (p.unidad) {
+              ({{ p.unidad }})
+            }
+          </span>
+          <input
+            [name]="p.nombre"
+            [type]="tipoInput(p.tipo)"
+            [required]="p.requerido"
+            [attr.min]="p.minimo"
+            [attr.max]="p.maximo"
+          />
+          @if (p.descripcion) {
+            <small>{{ p.descripcion }}</small>
+          }
+        </label>
+      }
+    </form>
+  }
+
+  @if (condiciones(); as c) {
+    <div class="ramos__fondo">
+      <div
+        class="ramos__modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="ramos-modal-titulo"
+      >
+        <h2 id="ramos-modal-titulo" class="ramos__subtitle">Condiciones · {{ c.nombre }}</h2>
+        <p class="ramos__text" data-testid="mensaje-legal">{{ c.mensaje_legal }}</p>
+        <p class="ramos__nota"><strong>Información consultada:</strong> {{ fuentes(c) }}.</p>
+        <button class="ramos__btn" type="button" (click)="cerrarCondiciones()">Cerrar</button>
+      </div>
+    </div>
+  }
+</section>

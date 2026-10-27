@@ -27,6 +27,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'ramos',
+        title: 'Ramos de seguro · Solventa',
+        data: { kicker: 'adquirir', titulo: 'Ramos de seguro' },
+        loadComponent: () =>
+          import('./features/cliente/pages/ramos/ramos.component').then((m) => m.RamosComponent),
+      },
+      {
         path: 'perfil',
         title: 'Perfil · Solventa',
         data: { kicker: 'perfil', titulo: 'Tratamiento de datos' },
