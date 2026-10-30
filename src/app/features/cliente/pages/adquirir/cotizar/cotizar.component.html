@@ -1,0 +1,77 @@
+<section class="adq adq--form">
+  <app-pasos-compra [actual]="0" />
+
+  @if (cargando()) {
+    <p class="adq__text" role="status">Cargando el producto…</p>
+  }
+
+  @if (error(); as msg) {
+    <div class="callout callout--alert" role="alert">{{ msg }}</div>
+  }
+
+  @if (producto(); as p) {
+    <div>
+      <p class="kicker">{{ p.ramo }}</p>
+      <h1 class="adq__title">{{ p.nombre }}</h1>
+    </div>
+
+    <form class="adq__form" [formGroup]="form()" (ngSubmit)="cotizar()" novalidate>
+      <h2 class="adq__subtitle">Datos del riesgo</h2>
+
+      @for (par of parametros(); track par.nombre) {
+        @let id = 'par-' + par.nombre;
+        @let msg = mensaje(par);
+        @if (control(par) === 'booleano') {
+          <div class="field">
+            <label class="adq__check" [for]="id">
+              <input [id]="id" type="checkbox" [formControlName]="par.nombre" />
+              {{ par.etiqueta }}
+            </label>
+            @if (par.descripcion) {
+              <p class="adq__hint">{{ par.descripcion }}</p>
+            }
+          </div>
+        } @else {
+          <div class="field">
+            <label [for]="id">
+              {{ par.etiqueta }}{{ par.unidad ? ' (' + par.unidad + ')' : ''
+              }}{{ par.requerido === false ? ' · opcional' : '' }}
+            </label>
+            <input
+              [id]="id"
+              class="input"
+              [class.input--mono]="control(par) !== 'texto'"
+              [class.input--invalid]="msg"
+              [type]="
+                control(par) === 'numero' ? 'number' : control(par) === 'fecha' ? 'date' : 'text'
+              "
+              [attr.min]="control(par) === 'texto' ? null : par.minimo"
+              [attr.max]="control(par) === 'texto' ? null : par.maximo"
+              [attr.step]="control(par) === 'numero' ? 'any' : null"
+              [attr.aria-invalid]="msg ? true : null"
+              [attr.aria-describedby]="id + '-ayuda'"
+              [formControlName]="par.nombre"
+            />
+            <p [id]="id + '-ayuda'" class="adq__hint">{{ par.descripcion }} {{ rango(par) }}</p>
+            @if (msg) {
+              <p class="field__error">{{ msg }}</p>
+            }
+          </div>
+        }
+      }
+
+      @if (p.mensaje_legal) {
+        <div class="callout">{{ p.mensaje_legal }}</div>
+      }
+
+      <div class="adq__acciones">
+        <button type="submit" class="btn btn--primary btn--lg" [disabled]="enviando()">
+          {{ enviando() ? 'Cotizando…' : 'Cotizar ahora' }}
+        </button>
+        <a class="btn btn--secondary btn--lg" routerLink="/cliente/adquirir">Volver</a>
+      </div>
+    </form>
+  } @else if (!cargando()) {
+    <a class="link" routerLink="/cliente/adquirir">Volver al catálogo</a>
+  }
+</section>

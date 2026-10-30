@@ -1,0 +1,39 @@
+<section class="adq">
+  <div>
+    <h1 class="adq__title">Qué quieres proteger</h1>
+    <p class="adq__lead">Elige un producto, cotiza en un paso y conoce tu prima al instante.</p>
+  </div>
+
+  @if (cargando()) {
+    <p class="adq__text" role="status">Cargando el catálogo…</p>
+  }
+
+  @if (error(); as msg) {
+    <div class="callout callout--alert" role="alert">
+      {{ msg }}
+      <button class="link" type="button" (click)="cargar()">Reintentar</button>
+    </div>
+  }
+
+  @if (!cargando() && !error() && productos().length === 0) {
+    <p class="adq__text">Por ahora no hay productos disponibles.</p>
+  }
+
+  <div class="adq__grid">
+    @for (p of productos(); track p.codigo) {
+      <article class="adq__card" data-testid="producto">
+        <p class="kicker">{{ p.ramo }}</p>
+        <h2 class="adq__card-title">{{ p.nombre }}</h2>
+        @if (p.coberturas.length > 0) {
+          <ul class="adq__coberturas">
+            @for (c of p.coberturas; track c.cobertura_id) {
+              <li>{{ c.nombre }}</li>
+            }
+          </ul>
+        }
+        <p class="adq__meta">{{ p.pais }} · {{ p.moneda }}</p>
+        <a class="btn btn--secondary btn--full" [routerLink]="[p.codigo, 'cotizar']">Cotizar</a>
+      </article>
+    }
+  </div>
+</section>

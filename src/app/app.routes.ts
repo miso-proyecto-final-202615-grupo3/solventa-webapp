@@ -27,6 +27,33 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'adquirir',
+        title: 'Adquirir · Solventa',
+        data: { kicker: 'adquirir', titulo: 'Catálogo' },
+        loadComponent: () =>
+          import('./features/cliente/pages/adquirir/catalogo/catalogo.component').then(
+            (m) => m.CatalogoComponent,
+          ),
+      },
+      {
+        path: 'adquirir/:codigo/cotizar',
+        title: 'Cotizar · Solventa',
+        data: { kicker: 'adquirir', titulo: 'Cotización' },
+        loadComponent: () =>
+          import('./features/cliente/pages/adquirir/cotizar/cotizar.component').then(
+            (m) => m.CotizarComponent,
+          ),
+      },
+      {
+        path: 'adquirir/:codigo/cotizacion',
+        title: 'Resultado de la cotización · Solventa',
+        data: { kicker: 'adquirir', titulo: 'Resultado' },
+        loadComponent: () =>
+          import('./features/cliente/pages/adquirir/cotizacion/cotizacion.component').then(
+            (m) => m.CotizacionComponent,
+          ),
+      },
+      {
         path: 'perfil',
         title: 'Perfil · Solventa',
         data: { kicker: 'perfil', titulo: 'Tratamiento de datos' },

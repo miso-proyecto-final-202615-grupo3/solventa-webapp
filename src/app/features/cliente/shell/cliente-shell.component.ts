@@ -29,7 +29,7 @@ export class ClienteShellComponent {
   protected readonly menu: readonly ItemMenu[] = [
     { etiqueta: 'Mis pólizas', ruta: '/cliente/polizas' },
     { etiqueta: 'Siniestros', ruta: null },
-    { etiqueta: 'Adquirir', ruta: null },
+    { etiqueta: 'Adquirir', ruta: '/cliente/adquirir' },
     { etiqueta: 'Perfil', ruta: '/cliente/perfil' },
   ];
 

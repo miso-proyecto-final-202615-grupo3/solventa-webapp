@@ -29,7 +29,8 @@ describe('ClienteShellComponent', () => {
     const pronto = Array.from(el.querySelectorAll('[aria-disabled="true"]')).map((n) =>
       n.textContent?.trim(),
     );
-    expect(pronto).toEqual(['Siniestros Pronto', 'Adquirir Pronto']);
+    expect(el.querySelector('a[href="/cliente/adquirir"]')?.textContent).toContain('Adquirir');
+    expect(pronto).toEqual(['Siniestros Pronto']);
   });
 
   it('muestra el correo de la sesión', async () => {

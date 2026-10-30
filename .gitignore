@@ -67,3 +67,5 @@ infra/*_override.tf.json
 /coverage
 /playwright-report
 /test-results
+
+temp
