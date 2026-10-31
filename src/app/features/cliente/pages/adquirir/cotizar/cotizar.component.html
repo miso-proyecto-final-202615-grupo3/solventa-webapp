@@ -21,7 +21,77 @@
       @for (par of parametros(); track par.nombre) {
         @let id = 'par-' + par.nombre;
         @let msg = mensaje(par);
-        @if (control(par) === 'booleano') {
+        @if (esUbicacion(par)) {
+          <div
+            class="adq__ubicacion"
+            [formGroupName]="par.nombre"
+            role="group"
+            [attr.aria-labelledby]="id + '-titulo'"
+          >
+            <div>
+              <p [id]="id + '-titulo'" class="adq__subtitle">
+                {{ par.etiqueta }}{{ par.requerido === false ? ' · opcional' : '' }}
+              </p>
+              <p [id]="id + '-ayuda'" class="adq__hint">{{ par.descripcion }}</p>
+            </div>
+            <div class="field">
+              <label [for]="id + '-municipio'">Municipio</label>
+              <select
+                [id]="id + '-municipio'"
+                class="input"
+                formControlName="municipio"
+                [attr.aria-invalid]="ubicacionInvalida(par) ? true : null"
+                [attr.aria-describedby]="
+                  ubicacionInvalida(par) ? id + '-ayuda ' + id + '-error' : id + '-ayuda'
+                "
+              >
+                <option value="">Selecciona un municipio</option>
+                @for (municipio of municipios; track municipio) {
+                  <option [value]="municipio">{{ municipio }}</option>
+                }
+              </select>
+            </div>
+            <div class="field">
+              <label [for]="id + '-zona'">Zona</label>
+              <select
+                [id]="id + '-zona'"
+                class="input"
+                formControlName="zona"
+                [attr.aria-invalid]="ubicacionInvalida(par) ? true : null"
+                [attr.aria-describedby]="
+                  ubicacionInvalida(par) ? id + '-ayuda ' + id + '-error' : id + '-ayuda'
+                "
+              >
+                <option value="">Selecciona una zona</option>
+                @for (zona of zonas; track zona.valor) {
+                  <option [value]="zona.valor">{{ zona.etiqueta }}</option>
+                }
+              </select>
+            </div>
+            <div class="field">
+              <label [for]="id + '-estrato'">Estrato</label>
+              <select
+                [id]="id + '-estrato'"
+                class="input"
+                formControlName="estrato"
+                [attr.aria-invalid]="ubicacionInvalida(par) ? true : null"
+                [attr.aria-describedby]="
+                  ubicacionInvalida(par) ? id + '-ayuda ' + id + '-error' : id + '-ayuda'
+                "
+              >
+                <option value="">Selecciona un estrato</option>
+                @for (estrato of estratos; track estrato) {
+                  <option [value]="estrato">{{ estrato }}</option>
+                }
+              </select>
+            </div>
+            @if (ubicacionInvalida(par)) {
+              <p [id]="id + '-error'" class="field__error">
+                Completa el municipio, la zona y el estrato.
+              </p>
+            }
+          </div>
+        } @else if (control(par) === 'booleano') {
           <div class="field">
             <label class="adq__check" [for]="id">
               <input [id]="id" type="checkbox" [formControlName]="par.nombre" />

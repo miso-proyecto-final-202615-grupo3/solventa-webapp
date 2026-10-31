@@ -34,8 +34,14 @@ export interface Producto {
 export interface SolicitudCotizacion {
   cliente_id: string;
   producto_codigo: string;
-  parametros: Record<string, string | number | boolean>;
+  parametros: Record<string, string | number | boolean | Ubicacion>;
   socio_id?: string | null;
+}
+
+export interface Ubicacion {
+  municipio: string;
+  zona: string;
+  estrato: number;
 }
 
 export interface Ajuste {

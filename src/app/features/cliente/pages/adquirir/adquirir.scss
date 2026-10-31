@@ -15,6 +15,11 @@
   gap: var(--space-7, 16px);
 }
 
+.adq__ubicacion {
+  display: grid;
+  gap: var(--space-6, 14px);
+}
+
 .adq__title {
   margin: 0;
   font-family: var(--font-display, system-ui, sans-serif);

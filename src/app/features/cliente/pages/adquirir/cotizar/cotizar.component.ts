@@ -18,7 +18,11 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { ParametroSeguro, Producto } from '../../../../../core/models/cotizacion';
+import {
+  ParametroSeguro,
+  Producto,
+  SolicitudCotizacion,
+} from '../../../../../core/models/cotizacion';
 import { CotizacionService, SesionError } from '../../../../../core/services/cotizacion.service';
 import { TipoControl, tipoControl, valorParametro } from '../../../../../core/utils/parametros';
 import { PasosCompraComponent } from '../../../../../shared/pasos-compra/pasos-compra.component';
@@ -31,6 +35,66 @@ function limiteFecha(minimo: string | null, maximo: string | null): ValidatorFn 
     if (minimo && v < minimo) return { min: { min: minimo } };
     if (maximo && v > maximo) return { max: { max: maximo } };
     return null;
+  };
+}
+
+const MUNICIPIOS = [
+  'Arauca',
+  'Armenia',
+  'Barranquilla',
+  'Bogotá',
+  'Bucaramanga',
+  'Cali',
+  'Cartagena',
+  'Cúcuta',
+  'Florencia',
+  'Ibagué',
+  'Inírida',
+  'Leticia',
+  'Manizales',
+  'Medellín',
+  'Mitú',
+  'Mocoa',
+  'Montería',
+  'Neiva',
+  'Pasto',
+  'Pereira',
+  'Popayán',
+  'Puerto Carreño',
+  'Quibdó',
+  'Riohacha',
+  'San Andrés',
+  'San José del Guaviare',
+  'Santa Marta',
+  'Sincelejo',
+  'Tunja',
+  'Valledupar',
+  'Villavicencio',
+  'Yopal',
+];
+const ESTRATOS = ['1', '2', '3', '4', '5', '6'];
+const ZONAS = [
+  { valor: 'URBANA', etiqueta: 'Urbana' },
+  { valor: 'RURAL', etiqueta: 'Rural' },
+];
+
+type UbicacionForm = FormGroup<{
+  municipio: FormControl<string>;
+  zona: FormControl<string>;
+  estrato: FormControl<string>;
+}>;
+
+function ubicacionValida(requerido: boolean): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const municipio = control.get('municipio')?.value;
+    const zona = control.get('zona')?.value;
+    const estrato = control.get('estrato')?.value;
+    if (!requerido && !municipio && !zona && !estrato) return null;
+    return MUNICIPIOS.includes(municipio) &&
+      ZONAS.some((opcion) => opcion.valor === zona) &&
+      ESTRATOS.includes(estrato)
+      ? null
+      : { ubicacion: true };
   };
 }
 
@@ -52,8 +116,11 @@ export class CotizarComponent implements OnInit {
   protected readonly enviando = signal(false);
   protected readonly error = signal<string | null>(null);
   protected readonly producto = signal<Producto | null>(null);
-  protected readonly form = signal(new FormGroup<Record<string, FormControl>>({}));
+  protected readonly form = signal(new FormGroup<Record<string, FormControl | UbicacionForm>>({}));
   protected readonly parametros = computed(() => this.producto()?.parametros ?? []);
+  protected readonly municipios = MUNICIPIOS;
+  protected readonly estratos = ESTRATOS;
+  protected readonly zonas = ZONAS;
 
   async ngOnInit(): Promise<void> {
     try {
@@ -62,7 +129,7 @@ export class CotizarComponent implements OnInit {
       if (!producto) {
         this.error.set('No encontramos ese producto en el catálogo.');
       } else {
-        this.form.set(this.construirForm(producto.parametros));
+        this.form.set(this.construirForm(producto));
         this.producto.set(producto);
       }
     } catch {
@@ -74,6 +141,17 @@ export class CotizarComponent implements OnInit {
 
   protected control(p: ParametroSeguro): TipoControl {
     return tipoControl(p.tipo);
+  }
+
+  protected esUbicacion(p: ParametroSeguro, codigo = this.producto()?.codigo): boolean {
+    return (
+      codigo === 'VIDA_HIPOTECARIO' && p.nombre === 'ubicacion' && p.tipo.toLowerCase() === 'object'
+    );
+  }
+
+  protected ubicacionInvalida(p: ParametroSeguro): boolean {
+    const control = this.form().controls[p.nombre];
+    return !!control && control.touched && control.invalid;
   }
 
   protected mensaje(p: ParametroSeguro): string | null {
@@ -101,10 +179,18 @@ export class CotizarComponent implements OnInit {
       form.markAllAsTouched();
       return;
     }
-    const parametros: Record<string, string | number | boolean> = {};
+    const parametros: SolicitudCotizacion['parametros'] = {};
     for (const p of producto.parametros) {
-      const valor = valorParametro(p, form.controls[p.nombre].value);
-      if (valor !== null) parametros[p.nombre] = valor;
+      const control = form.controls[p.nombre];
+      if (this.esUbicacion(p) && control instanceof FormGroup) {
+        const { municipio, zona, estrato } = control.getRawValue();
+        if (municipio || zona || estrato) {
+          parametros[p.nombre] = { municipio, zona, estrato: Number(estrato) };
+        }
+      } else {
+        const valor = valorParametro(p, control.value);
+        if (valor !== null) parametros[p.nombre] = valor;
+      }
     }
     this.enviando.set(true);
     this.error.set(null);
@@ -122,9 +208,22 @@ export class CotizarComponent implements OnInit {
     return p.unidad ? ` ${p.unidad}` : '';
   }
 
-  private construirForm(parametros: ParametroSeguro[]): FormGroup<Record<string, FormControl>> {
-    const controles: Record<string, FormControl> = {};
-    for (const p of parametros) {
+  private construirForm(
+    producto: Producto,
+  ): FormGroup<Record<string, FormControl | UbicacionForm>> {
+    const controles: Record<string, FormControl | UbicacionForm> = {};
+    for (const p of producto.parametros) {
+      if (this.esUbicacion(p, producto.codigo)) {
+        controles[p.nombre] = new FormGroup(
+          {
+            municipio: new FormControl('', { nonNullable: true }),
+            zona: new FormControl('', { nonNullable: true }),
+            estrato: new FormControl('', { nonNullable: true }),
+          },
+          ubicacionValida(p.requerido !== false),
+        );
+        continue;
+      }
       const tipo = tipoControl(p.tipo);
       const validadores: ValidatorFn[] = [];
       if (p.requerido !== false && tipo !== 'booleano') validadores.push(Validators.required);
