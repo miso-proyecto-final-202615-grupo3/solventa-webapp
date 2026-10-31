@@ -35,17 +35,24 @@
 
 .adq__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
   gap: var(--space-6, 14px);
 }
 
 .adq__card {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-5, 12px);
-  align-content: start;
+  min-width: 0;
   padding: var(--space-8, 20px);
   border: var(--border, 1px solid rgb(16 27 45 / 14%));
   background: var(--surface-card, #fff);
+  overflow-wrap: anywhere;
+}
+
+.adq__cotizar {
+  box-sizing: border-box;
+  margin-top: auto;
 }
 
 .adq__card-title {

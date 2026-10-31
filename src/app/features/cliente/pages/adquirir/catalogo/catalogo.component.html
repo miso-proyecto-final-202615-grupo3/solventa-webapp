@@ -32,7 +32,9 @@
           </ul>
         }
         <p class="adq__meta">{{ p.pais }} · {{ p.moneda }}</p>
-        <a class="btn btn--secondary btn--full" [routerLink]="[p.codigo, 'cotizar']">Cotizar</a>
+        <a class="btn btn--secondary btn--full adq__cotizar" [routerLink]="[p.codigo, 'cotizar']">
+          Cotizar
+        </a>
       </article>
     }
   </div>
