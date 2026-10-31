@@ -107,22 +107,41 @@
               {{ par.etiqueta }}{{ par.unidad ? ' (' + par.unidad + ')' : ''
               }}{{ par.requerido === false ? ' · opcional' : '' }}
             </label>
-            <input
-              [id]="id"
-              class="input"
-              [class.input--mono]="control(par) !== 'texto'"
-              [class.input--invalid]="msg"
-              [type]="
-                control(par) === 'numero' ? 'number' : control(par) === 'fecha' ? 'date' : 'text'
-              "
-              [attr.min]="control(par) === 'texto' ? null : par.minimo"
-              [attr.max]="control(par) === 'texto' ? null : par.maximo"
-              [attr.step]="control(par) === 'numero' ? 'any' : null"
-              [attr.aria-invalid]="msg ? true : null"
-              [attr.aria-describedby]="id + '-ayuda'"
-              [formControlName]="par.nombre"
-            />
-            <p [id]="id + '-ayuda'" class="adq__hint">{{ par.descripcion }} {{ rango(par) }}</p>
+            @if (esMonto(par)) {
+              <input
+                [id]="id"
+                class="input input--mono"
+                [class.input--invalid]="msg"
+                type="text"
+                inputmode="decimal"
+                appMonto
+                [attr.aria-invalid]="msg ? true : null"
+                [attr.aria-describedby]="id + '-ayuda'"
+                [formControlName]="par.nombre"
+              />
+            } @else {
+              <input
+                [id]="id"
+                class="input"
+                [class.input--mono]="control(par) !== 'texto'"
+                [class.input--invalid]="msg"
+                [type]="
+                  control(par) === 'numero' ? 'number' : control(par) === 'fecha' ? 'date' : 'text'
+                "
+                [attr.min]="control(par) === 'texto' ? null : par.minimo"
+                [attr.max]="control(par) === 'texto' ? null : par.maximo"
+                [attr.step]="control(par) === 'numero' ? 'any' : null"
+                [attr.aria-invalid]="msg ? true : null"
+                [attr.aria-describedby]="id + '-ayuda'"
+                [formControlName]="par.nombre"
+              />
+            }
+            <p [id]="id + '-ayuda'" class="adq__hint">
+              {{ par.descripcion }} {{ rango(par) }}
+              @if (esMonto(par)) {
+                Usa coma para los decimales.
+              }
+            </p>
             @if (msg) {
               <p class="field__error">{{ msg }}</p>
             }

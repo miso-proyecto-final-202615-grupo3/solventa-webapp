@@ -10,15 +10,20 @@ export default defineConfig({
   use: {
     baseURL,
     trace: 'on-first-retry',
+    video: {
+      mode: 'retain-on-failure',
+      size: { width: 1920, height: 1200 },
+    },
+    viewport: { width: 1920, height: 1200 },
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   // Si E2E_BASE_URL apunta a un ambiente desplegado, no se levanta servidor local.
   webServer: process.env['E2E_BASE_URL']
     ? undefined
     : {
-        command: 'npm start',
-        url: baseURL,
-        reuseExistingServer: !process.env['CI'],
-        timeout: 120_000,
-      },
+      command: 'npm start',
+      url: baseURL,
+      reuseExistingServer: !process.env['CI'],
+      timeout: 120_000,
+    },
 });

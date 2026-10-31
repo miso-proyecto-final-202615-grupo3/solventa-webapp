@@ -107,6 +107,43 @@ describe('CotizarComponent', () => {
     expect(el.textContent).toContain('Este dato es obligatorio.');
   });
 
+  it('formatea el monto sin modificar otros campos numéricos', async () => {
+    const producto: Producto = {
+      ...PRODUCTO,
+      parametros: [...PRODUCTO.parametros, VIDA_HIPOTECARIO.parametros[0]],
+    };
+    const { el } = await setup(producto);
+    escribir(el, 'saldo_credito', '1000000,50');
+    const monto = el.querySelector<HTMLInputElement>('#par-saldo_credito')!;
+    expect(monto.type).toBe('text');
+    expect(monto.inputMode).toBe('decimal');
+    expect(monto.value).toBe('1.000.000,50');
+    expect(el.querySelector<HTMLInputElement>('#par-dias')?.type).toBe('number');
+  });
+
+  it('valida montos inválidos y sus límites numéricos', async () => {
+    const producto: Producto = {
+      ...VIDA_HIPOTECARIO,
+      parametros: [{ ...VIDA_HIPOTECARIO.parametros[0], minimo: '1000', maximo: '2000' }],
+    };
+    const { fixture, el, http } = await setup(producto);
+    escribir(el, 'saldo_credito', 'abc');
+    el.querySelector('form')!.dispatchEvent(new Event('submit'));
+    fixture.detectChanges();
+    expect(el.textContent).toContain('Ingresa un monto válido');
+    http.expectNone((r) => r.params.get('correo') === 'ana@correo.com');
+
+    escribir(el, 'saldo_credito', '999');
+    fixture.detectChanges();
+    expect(el.textContent).toContain('El valor mínimo es 1000');
+    escribir(el, 'saldo_credito', '2000,01');
+    fixture.detectChanges();
+    expect(el.textContent).toContain('El valor máximo es 2000');
+    escribir(el, 'saldo_credito', '');
+    fixture.detectChanges();
+    expect(el.textContent).toContain('Este dato es obligatorio.');
+  });
+
   it('envía la solicitud con el cliente de la sesión y navega al resultado', async () => {
     const { fixture, el, http } = await setup();
     const nav = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
@@ -213,7 +250,7 @@ describe('CotizarComponent', () => {
   it.each(['URBANA', 'RURAL'])('envía la zona %s en el objeto de ubicación', async (zona) => {
     const { fixture, el, http } = await setup(VIDA_HIPOTECARIO);
     const nav = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
-    escribir(el, 'saldo_credito', '1000000');
+    escribir(el, 'saldo_credito', '1000000,50');
     seleccionar(el, 'ubicacion-municipio', 'Bogotá');
     seleccionar(el, 'ubicacion-zona', zona);
     seleccionar(el, 'ubicacion-estrato', '4');
@@ -229,7 +266,7 @@ describe('CotizarComponent', () => {
           cliente_id: 'cli-1',
           producto_codigo: 'VIDA_HIPOTECARIO',
           parametros: {
-            saldo_credito: 1000000,
+            saldo_credito: 1000000.5,
             ubicacion: { municipio: 'Bogotá', zona, estrato: 4 },
           },
         });

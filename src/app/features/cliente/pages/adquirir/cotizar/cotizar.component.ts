@@ -26,6 +26,7 @@ import {
 import { CotizacionService, SesionError } from '../../../../../core/services/cotizacion.service';
 import { TipoControl, tipoControl, valorParametro } from '../../../../../core/utils/parametros';
 import { PasosCompraComponent } from '../../../../../shared/pasos-compra/pasos-compra.component';
+import { MontoDirective } from './monto.directive';
 
 /** Compara fechas ISO (yyyy-MM-dd) como texto, que conserva el orden cronológico. */
 function limiteFecha(minimo: string | null, maximo: string | null): ValidatorFn {
@@ -99,7 +100,7 @@ function ubicacionValida(requerido: boolean): ValidatorFn {
 }
 
 @Component({
-  imports: [ReactiveFormsModule, RouterLink, PasosCompraComponent],
+  imports: [ReactiveFormsModule, RouterLink, PasosCompraComponent, MontoDirective],
   selector: 'app-cotizar',
   styleUrl: '../adquirir.scss',
   templateUrl: './cotizar.component.html',
@@ -143,6 +144,15 @@ export class CotizarComponent implements OnInit {
     return tipoControl(p.tipo);
   }
 
+  protected esMonto(p: ParametroSeguro): boolean {
+    return (
+      this.control(p) === 'numero' &&
+      (/monto|money/i.test(p.tipo) ||
+        p.nombre.toLowerCase() === 'monto' ||
+        (!!p.unidad && p.unidad.toUpperCase() === this.producto()?.moneda.toUpperCase()))
+    );
+  }
+
   protected esUbicacion(p: ParametroSeguro, codigo = this.producto()?.codigo): boolean {
     return (
       codigo === 'VIDA_HIPOTECARIO' && p.nombre === 'ubicacion' && p.tipo.toLowerCase() === 'object'
@@ -158,6 +168,7 @@ export class CotizarComponent implements OnInit {
     const c = this.form().controls[p.nombre];
     if (!c || !c.touched || !c.errors) return null;
     if (c.errors['required']) return 'Este dato es obligatorio.';
+    if (c.errors['monto']) return 'Ingresa un monto válido usando coma para los decimales.';
     if (c.errors['min']) return `El valor mínimo es ${p.minimo}${this.unidad(p)}.`;
     if (c.errors['max']) return `El valor máximo es ${p.maximo}${this.unidad(p)}.`;
     return 'Revisa este dato.';
