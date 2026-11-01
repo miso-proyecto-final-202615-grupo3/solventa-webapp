@@ -54,6 +54,6 @@ jobs:
         run: |
           npm ci
           npx playwright install --with-deps chromium
-          npm run e2e
+          npx playwright test e2e/smoke.spec.ts
         env:
           E2E_BASE_URL: ${{ vars.DEV_URL }}

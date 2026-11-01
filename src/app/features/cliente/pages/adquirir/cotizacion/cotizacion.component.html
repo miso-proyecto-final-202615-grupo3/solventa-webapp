@@ -1,0 +1,95 @@
+@if (cotizacion(); as c) {
+  <section class="adq adq--form">
+    <app-pasos-compra [actual]="1" />
+
+    <div class="adq__prima">
+      <p class="adq__prima-label">prima total</p>
+      <p class="adq__prima-valor" data-testid="prima-total">{{ monto(c.prima_total, c.moneda) }}</p>
+      <p class="adq__prima-pie">{{ c.moneda }} · {{ c.producto_codigo }}</p>
+    </div>
+
+    @if (c.degradada) {
+      <div class="callout callout--alert" role="alert" data-testid="degradada">
+        <strong>Esta cotización se calculó con información limitada.</strong>
+        @if (c.motivos_degradacion.length > 0) {
+          <ul>
+            @for (m of c.motivos_degradacion; track m) {
+              <li>{{ m }}</li>
+            }
+          </ul>
+        }
+      </div>
+    }
+
+    <h2 class="adq__subtitle">Desglose de la prima</h2>
+    <table class="adq__tabla">
+      <tbody>
+        <tr>
+          <th scope="row">Prima base</th>
+          <td class="num">{{ monto(c.prima_base, c.moneda) }}</td>
+        </tr>
+        @for (a of c.ajustes; track $index) {
+          <tr>
+            <th scope="row">
+              {{ a.concepto }}
+              @if (a.motivo) {
+                <span class="adq__motivo">{{ a.motivo }}</span>
+              }
+            </th>
+            <td class="num">{{ valorAjuste(a, c.moneda) }}</td>
+          </tr>
+        }
+        @for (i of c.impuestos; track $index) {
+          <tr>
+            <th scope="row">
+              {{ i.concepto }}
+              <span class="adq__motivo">Tasa {{ i.tasa }}</span>
+            </th>
+            <td class="num">{{ monto(i.valor, c.moneda) }}</td>
+          </tr>
+        }
+        <tr class="total">
+          <th scope="row">Prima total</th>
+          <td class="num">{{ monto(c.prima_total, c.moneda) }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    @if (c.coberturas.length > 0) {
+      <h2 class="adq__subtitle">Coberturas incluidas</h2>
+      <table class="adq__tabla">
+        <thead>
+          <tr>
+            <th scope="col">Cobertura</th>
+            <th scope="col" class="num">Prima</th>
+            <th scope="col" class="num">Límite asegurado</th>
+            <th scope="col" class="num">Deducible</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (cob of c.coberturas; track cob.cobertura_id) {
+            <tr>
+              <td>{{ cob.nombre }}</td>
+              <td class="num">{{ monto(cob.prima, c.moneda) }}</td>
+              <td class="num">{{ monto(cob.limite_asegurado, c.moneda) }}</td>
+              <td class="num">{{ monto(cob.deducible, c.moneda) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+
+    <p class="adq__hint">
+      Cotización {{ c.estado }} · válida hasta {{ c.expira_en | date: 'dd/MM/yyyy HH:mm' }}
+    </p>
+
+    <div class="adq__acciones">
+      <a
+        class="btn btn--primary btn--lg"
+        [routerLink]="['/cliente/adquirir', c.producto_codigo, 'cotizar']"
+        >Cambiar los datos</a
+      >
+      <a class="btn btn--secondary btn--lg" routerLink="/cliente/adquirir">Elegir otro producto</a>
+    </div>
+  </section>
+}
