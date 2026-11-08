@@ -1,0 +1,166 @@
+<section class="adq adq--form">
+  <app-pasos-compra [actual]="0" />
+
+  @if (cargando()) {
+    <p class="adq__text" role="status">Cargando el producto…</p>
+  }
+
+  @if (error(); as msg) {
+    <div class="callout callout--alert" role="alert">{{ msg }}</div>
+  }
+
+  @if (producto(); as p) {
+    <div>
+      <p class="kicker">{{ p.ramo }}</p>
+      <h1 class="adq__title">{{ p.nombre }}</h1>
+    </div>
+
+    <form class="adq__form" [formGroup]="form()" (ngSubmit)="cotizar()" novalidate>
+      <h2 class="adq__subtitle">Datos del riesgo</h2>
+
+      @for (par of parametros(); track par.nombre) {
+        @let id = 'par-' + par.nombre;
+        @let msg = mensaje(par);
+        @if (esUbicacion(par)) {
+          <div
+            class="adq__ubicacion"
+            [formGroupName]="par.nombre"
+            role="group"
+            [attr.aria-labelledby]="id + '-titulo'"
+          >
+            <div>
+              <p [id]="id + '-titulo'" class="adq__subtitle">
+                {{ par.etiqueta }}{{ par.requerido === false ? ' · opcional' : '' }}
+              </p>
+              <p [id]="id + '-ayuda'" class="adq__hint">{{ par.descripcion }}</p>
+            </div>
+            <div class="field">
+              <label [for]="id + '-municipio'">Municipio</label>
+              <select
+                [id]="id + '-municipio'"
+                class="input"
+                formControlName="municipio"
+                [attr.aria-invalid]="ubicacionInvalida(par) ? true : null"
+                [attr.aria-describedby]="
+                  ubicacionInvalida(par) ? id + '-ayuda ' + id + '-error' : id + '-ayuda'
+                "
+              >
+                <option value="">Selecciona un municipio</option>
+                @for (municipio of municipios; track municipio) {
+                  <option [value]="municipio">{{ municipio }}</option>
+                }
+              </select>
+            </div>
+            <div class="field">
+              <label [for]="id + '-zona'">Zona</label>
+              <select
+                [id]="id + '-zona'"
+                class="input"
+                formControlName="zona"
+                [attr.aria-invalid]="ubicacionInvalida(par) ? true : null"
+                [attr.aria-describedby]="
+                  ubicacionInvalida(par) ? id + '-ayuda ' + id + '-error' : id + '-ayuda'
+                "
+              >
+                <option value="">Selecciona una zona</option>
+                @for (zona of zonas; track zona.valor) {
+                  <option [value]="zona.valor">{{ zona.etiqueta }}</option>
+                }
+              </select>
+            </div>
+            <div class="field">
+              <label [for]="id + '-estrato'">Estrato</label>
+              <select
+                [id]="id + '-estrato'"
+                class="input"
+                formControlName="estrato"
+                [attr.aria-invalid]="ubicacionInvalida(par) ? true : null"
+                [attr.aria-describedby]="
+                  ubicacionInvalida(par) ? id + '-ayuda ' + id + '-error' : id + '-ayuda'
+                "
+              >
+                <option value="">Selecciona un estrato</option>
+                @for (estrato of estratos; track estrato) {
+                  <option [value]="estrato">{{ estrato }}</option>
+                }
+              </select>
+            </div>
+            @if (ubicacionInvalida(par)) {
+              <p [id]="id + '-error'" class="field__error">
+                Completa el municipio, la zona y el estrato.
+              </p>
+            }
+          </div>
+        } @else if (control(par) === 'booleano') {
+          <div class="field">
+            <label class="adq__check" [for]="id">
+              <input [id]="id" type="checkbox" [formControlName]="par.nombre" />
+              {{ par.etiqueta }}
+            </label>
+            @if (par.descripcion) {
+              <p class="adq__hint">{{ par.descripcion }}</p>
+            }
+          </div>
+        } @else {
+          <div class="field">
+            <label [for]="id">
+              {{ par.etiqueta }}{{ par.unidad ? ' (' + par.unidad + ')' : ''
+              }}{{ par.requerido === false ? ' · opcional' : '' }}
+            </label>
+            @if (esMonto(par)) {
+              <input
+                [id]="id"
+                class="input input--mono"
+                [class.input--invalid]="msg"
+                type="text"
+                inputmode="decimal"
+                appMonto
+                [attr.aria-invalid]="msg ? true : null"
+                [attr.aria-describedby]="id + '-ayuda'"
+                [formControlName]="par.nombre"
+              />
+            } @else {
+              <input
+                [id]="id"
+                class="input"
+                [class.input--mono]="control(par) !== 'texto'"
+                [class.input--invalid]="msg"
+                [type]="
+                  control(par) === 'numero' ? 'number' : control(par) === 'fecha' ? 'date' : 'text'
+                "
+                [attr.min]="control(par) === 'texto' ? null : par.minimo"
+                [attr.max]="control(par) === 'texto' ? null : par.maximo"
+                [attr.step]="control(par) === 'numero' ? 'any' : null"
+                [attr.aria-invalid]="msg ? true : null"
+                [attr.aria-describedby]="id + '-ayuda'"
+                [formControlName]="par.nombre"
+              />
+            }
+            <p [id]="id + '-ayuda'" class="adq__hint">
+              {{ par.descripcion }} {{ rango(par) }}
+              @if (esMonto(par)) {
+                Usa coma para los decimales.
+              }
+            </p>
+            @if (msg) {
+              <p class="field__error">{{ msg }}</p>
+            }
+          </div>
+        }
+      }
+
+      @if (p.mensaje_legal) {
+        <div class="callout">{{ p.mensaje_legal }}</div>
+      }
+
+      <div class="adq__acciones">
+        <button type="submit" class="btn btn--primary btn--lg" [disabled]="enviando()">
+          {{ enviando() ? 'Cotizando…' : 'Cotizar ahora' }}
+        </button>
+        <a class="btn btn--secondary btn--lg" routerLink="/cliente/adquirir">Volver</a>
+      </div>
+    </form>
+  } @else if (!cargando()) {
+    <a class="link" routerLink="/cliente/adquirir">Volver al catálogo</a>
+  }
+</section>

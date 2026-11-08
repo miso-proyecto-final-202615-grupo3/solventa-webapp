@@ -1,0 +1,105 @@
+<section class="adq">
+  <div>
+    <h1 class="adq__title">Qué quieres proteger</h1>
+    <p class="adq__lead">Elige un producto, cotiza en un paso y conoce tu prima al instante.</p>
+  </div>
+
+  @if (cargando()) {
+    <p class="adq__text" role="status">Cargando el catálogo…</p>
+  }
+
+  @if (error(); as msg) {
+    <div class="callout callout--alert" role="alert">
+      {{ msg }}
+      <button class="link" type="button" (click)="cargar()">Reintentar</button>
+    </div>
+  }
+
+  @if (!cargando() && !error() && productos().length === 0) {
+    <p class="adq__text">Por ahora no hay productos disponibles.</p>
+  }
+
+  <div class="adq__grid">
+    @for (p of productos(); track p.codigo) {
+      <article class="adq__card" data-testid="producto">
+        <div class="adq__card-header">
+          <p class="kicker">{{ p.ramo }}</p>
+          <button
+            class="adq__info"
+            type="button"
+            [attr.aria-label]="'Información de ' + p.nombre"
+            aria-haspopup="dialog"
+            (click)="detalle.showModal()"
+          >
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" />
+              <path
+                d="M12 11v5m0-8h.01"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        </div>
+        <h2 class="adq__card-title">{{ p.nombre }}</h2>
+        @if (p.coberturas.length > 0) {
+          <ul class="adq__coberturas">
+            @for (c of p.coberturas; track c.cobertura_id) {
+              <li>{{ c.nombre }}</li>
+            }
+          </ul>
+        }
+        <p class="adq__meta">{{ p.pais }} · {{ p.moneda }}</p>
+        <div class="adq__card-footer">
+          @if (p.fuentes_datos.length > 0) {
+            <div class="adq__fuentes" aria-label="Fuentes de datos">
+              @for (fuente of p.fuentes_datos; track $index) {
+                <span class="adq__badge">{{ fuente }}</span>
+              }
+            </div>
+          }
+          <a class="btn btn--secondary btn--full adq__cotizar" [routerLink]="[p.codigo, 'cotizar']">
+            Cotizar
+          </a>
+        </div>
+        <dialog #detalle class="adq__dialog" [attr.aria-labelledby]="'detalle-' + p.codigo">
+          <div class="adq__dialog-content">
+            <h2 class="adq__card-title" [id]="'detalle-' + p.codigo">{{ p.nombre }}</h2>
+            <div>
+              <h3 class="adq__dialog-heading">Información legal</h3>
+              <p class="adq__dialog-text">{{ p.mensaje_legal || 'No disponible.' }}</p>
+            </div>
+            <div>
+              <h3 class="adq__dialog-heading">Coberturas</h3>
+              @if (p.coberturas.length > 0) {
+                <ul class="adq__coberturas">
+                  @for (c of p.coberturas; track c.cobertura_id) {
+                    <li>{{ c.nombre }}</li>
+                  }
+                </ul>
+              } @else {
+                <p class="adq__dialog-text">No disponibles.</p>
+              }
+            </div>
+            <div>
+              <h3 class="adq__dialog-heading">Fuentes de datos</h3>
+              @if (p.fuentes_datos.length > 0) {
+                <div class="adq__fuentes">
+                  @for (fuente of p.fuentes_datos; track $index) {
+                    <span class="adq__badge">{{ fuente }}</span>
+                  }
+                </div>
+              } @else {
+                <p class="adq__dialog-text">No disponibles.</p>
+              }
+            </div>
+            <button class="btn btn--secondary" type="button" (click)="detalle.close()">
+              Cerrar
+            </button>
+          </div>
+        </dialog>
+      </article>
+    }
+  </div>
+</section>

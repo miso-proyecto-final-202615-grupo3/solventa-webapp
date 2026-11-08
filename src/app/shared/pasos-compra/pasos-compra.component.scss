@@ -1,0 +1,32 @@
+.pasos {
+  display: flex;
+  gap: var(--space-6, 14px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--size-caption, 12px);
+  color: var(--text-subtle, rgb(16 27 45 / 50%));
+}
+
+.pasos__item {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-3, 8px);
+  padding-bottom: var(--space-3, 8px);
+  border-bottom: 2px solid var(--ink-14, rgb(16 27 45 / 14%));
+}
+
+.pasos__item--hecho,
+.pasos__item--actual {
+  border-bottom-color: var(--slv-cobalto, #1b3a6b);
+  color: var(--text-body, #101b2d);
+}
+
+.pasos__item--actual {
+  font-weight: var(--weight-semibold, 600);
+}
+
+.pasos__num {
+  font-family: var(--font-mono, monospace);
+}
