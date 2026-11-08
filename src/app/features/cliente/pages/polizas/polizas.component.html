@@ -41,10 +41,7 @@
           <span class="polizas__mono">{{ poliza.numero }}</span>
           <span>{{ poliza.ramo }}</span>
           <span class="polizas__numeric">{{ poliza.prima_total | number: '1.2-2' }} COP</span>
-          <span
-            >{{ poliza.vigencia_desde | date: 'dd/MM/yyyy' }} -
-            {{ poliza.vigencia_hasta | date: 'dd/MM/yyyy' }}</span
-          >
+          <span>Vence {{ poliza.vigencia_hasta | date: 'dd/MM/yyyy' }}</span>
           <span class="polizas__status">{{ poliza.estado }}</span>
         </button>
       }

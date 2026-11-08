@@ -65,5 +65,6 @@ describe('PolizasComponent', () => {
     const el = fixture.nativeElement as HTMLElement;
     expect(el.textContent).toContain('POL-0001');
     expect(el.textContent).toContain('EMITIDA');
+    expect(el.textContent).toContain('Vence 01/01/2027');
   });
 });
