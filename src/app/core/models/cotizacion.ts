@@ -95,6 +95,7 @@ export interface Poliza {
   vigencia_desde: string;
   vigencia_hasta: string;
   emitida_en: string | null;
+  ramo: string;
   prima_total: string;
   coberturas: PolizaCobertura[];
   documento_url?: string | null;

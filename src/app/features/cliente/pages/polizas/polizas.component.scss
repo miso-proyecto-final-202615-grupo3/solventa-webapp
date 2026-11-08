@@ -78,10 +78,9 @@
 .polizas__table-head,
 .polizas__table-row {
   display: grid;
-  grid-template-columns: minmax(150px, 1.2fr) minmax(90px, 0.7fr) minmax(220px, 1.5fr) minmax(
-      125px,
-      0.8fr
-    );
+  grid-template-columns:
+    minmax(130px, 1.1fr) minmax(120px, 1fr) minmax(125px, 0.8fr) minmax(210px, 1.5fr)
+    minmax(95px, 0.7fr);
   align-items: center;
   gap: var(--space-5, 12px);
   padding: var(--space-6, 14px) var(--space-7, 16px);

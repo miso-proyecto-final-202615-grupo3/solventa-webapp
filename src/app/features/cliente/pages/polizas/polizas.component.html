@@ -25,9 +25,10 @@
     <div class="polizas__table" role="table" aria-label="Pólizas activas">
       <div class="polizas__table-head" role="row">
         <span>Póliza</span>
-        <span>Estado</span>
-        <span>Vigencia</span>
+        <span>Ramo</span>
         <span class="polizas__numeric">Prima</span>
+        <span>Vigencia</span>
+        <span>Estado</span>
       </div>
       @for (poliza of polizas(); track poliza.poliza_id) {
         <button
@@ -38,12 +39,13 @@
           (click)="seleccionar(poliza)"
         >
           <span class="polizas__mono">{{ poliza.numero }}</span>
-          <span class="polizas__status">{{ poliza.estado }}</span>
+          <span>{{ poliza.ramo }}</span>
+          <span class="polizas__numeric">{{ poliza.prima_total | number: '1.2-2' }} COP</span>
           <span
             >{{ poliza.vigencia_desde | date: 'dd/MM/yyyy' }} -
             {{ poliza.vigencia_hasta | date: 'dd/MM/yyyy' }}</span
           >
-          <span class="polizas__numeric">{{ poliza.prima_total | number: '1.2-2' }} COP</span>
+          <span class="polizas__status">{{ poliza.estado }}</span>
         </button>
       }
     </div>

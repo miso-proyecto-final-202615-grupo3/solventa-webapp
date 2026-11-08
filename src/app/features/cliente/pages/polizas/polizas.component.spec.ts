@@ -41,6 +41,7 @@ describe('PolizasComponent', () => {
                   vigencia_desde: '2026-01-01T00:00:00Z',
                   vigencia_hasta: '2027-01-01T00:00:00Z',
                   emitida_en: '2026-01-01T00:00:00Z',
+                  ramo: 'VIAJE',
                   prima_total: '12000.50',
                   coberturas: [
                     {
