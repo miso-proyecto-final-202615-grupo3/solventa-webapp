@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { PolizaService } from '../../../../core/services/poliza.service';
 import { PolizasComponent } from './polizas.component';
 
@@ -7,6 +8,7 @@ describe('PolizasComponent', () => {
     await TestBed.configureTestingModule({
       imports: [PolizasComponent],
       providers: [
+        provideRouter([]),
         { provide: PolizaService, useValue: { listarMisPolizas: () => Promise.resolve([]) } },
       ],
     }).compileComponents();
@@ -15,7 +17,7 @@ describe('PolizasComponent', () => {
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
 
-    expect(el.querySelector('h1')?.textContent).toContain('Mis pólizas');
+    expect(el.querySelector('h1')?.textContent).toContain('Pólizas de tu cuenta');
     expect(el.textContent).toContain('Aún no tienes pólizas activas');
     expect(el.querySelector('a[href="/registro"]')).toBeNull();
   });
@@ -52,6 +54,7 @@ describe('PolizasComponent', () => {
               ]),
           },
         },
+        provideRouter([]),
       ],
     }).compileComponents();
     const fixture = TestBed.createComponent(PolizasComponent);

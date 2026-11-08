@@ -1,64 +1,149 @@
 .polizas {
   display: grid;
   gap: var(--space-7, 16px);
-  max-width: 960px;
+  max-width: 1000px;
 }
 
-.polizas__title {
+.polizas__intro,
+.polizas__detail-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6, 14px);
+}
+
+.polizas__kicker,
+.polizas__eyebrow {
   margin: 0;
-  font-family: var(--font-display, system-ui, sans-serif);
-  font-size: clamp(32px, 5vw, 48px);
+  color: var(--ink-50, rgb(16 27 45 / 50%));
+  font-family: var(--font-mono, monospace);
+  font-size: var(--size-mono-sm, 12px);
+  text-transform: lowercase;
+}
+
+.polizas__title,
+.polizas__detail h2 {
+  margin: var(--space-3, 8px) 0 0;
   color: var(--slv-ink, #101b2d);
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: clamp(28px, 4vw, 38px);
+  line-height: 1.1;
 }
 
+.polizas__count,
 .polizas__message,
-.polizas__text {
-  margin: 0;
-  color: var(--ink-72, rgb(16 27 45 / 72%));
+.polizas__text,
+.polizas__hint,
+.polizas__note {
+  margin: var(--space-3, 8px) 0 0;
+  color: var(--ink-62, rgb(16 27 45 / 62%));
+  font-size: var(--size-body-sm, 15px);
+}
+
+.polizas__action {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 var(--space-7, 16px);
+  border: 1px solid var(--slv-cobalto, #1b3a6b);
+  color: var(--slv-cobalto, #1b3a6b);
+  font-size: var(--size-body-sm, 15px);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.polizas__action:hover {
+  background: var(--slv-cobalto-dim, #dce4ef);
 }
 
 .polizas__message--error {
   color: var(--slv-danger, #a22b2b);
 }
 
-.polizas__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
-  gap: var(--space-6, 14px);
-}
-
-.polizas__card {
-  display: grid;
-  gap: var(--space-6, 14px);
-  padding: var(--space-8, 20px);
+.polizas__empty,
+.polizas__table,
+.polizas__detail {
   border: var(--border, 1px solid rgb(16 27 45 / 14%));
   background: var(--surface-card, #fff);
 }
 
-.polizas__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
+.polizas__empty {
+  padding: var(--space-9, 20px);
+}
+
+.polizas__table {
+  overflow: hidden;
+}
+
+.polizas__table-head,
+.polizas__table-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1.2fr) minmax(90px, 0.7fr) minmax(220px, 1.5fr) minmax(
+      125px,
+      0.8fr
+    );
+  align-items: center;
   gap: var(--space-5, 12px);
+  padding: var(--space-6, 14px) var(--space-7, 16px);
+  text-align: left;
 }
 
-.polizas__header h2,
-.polizas__eyebrow {
-  margin: 0;
-}
-
-.polizas__eyebrow {
-  font-size: var(--size-caption, 12px);
-  color: var(--ink-62, rgb(16 27 45 / 62%));
+.polizas__table-head {
+  border-bottom: var(--border, 1px solid rgb(16 27 45 / 14%));
+  color: var(--ink-50, rgb(16 27 45 / 50%));
+  font-family: var(--font-mono, monospace);
+  font-size: var(--size-mono-sm, 12px);
   text-transform: uppercase;
 }
 
+.polizas__table-row {
+  width: 100%;
+  border: 0;
+  border-bottom: var(--border, 1px solid rgb(16 27 45 / 14%));
+  background: transparent;
+  color: var(--slv-ink, #101b2d);
+  font: inherit;
+  cursor: pointer;
+}
+
+.polizas__table-row:last-child {
+  border-bottom: 0;
+}
+
+.polizas__table-row:hover,
+.polizas__table-row--selected {
+  background: var(--surface-sunken, #f5f7f4);
+}
+
+.polizas__mono {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--size-mono-sm, 12px);
+}
+
+.polizas__numeric {
+  text-align: right;
+}
+
 .polizas__status {
+  justify-self: start;
   padding: 4px 8px;
-  background: var(--slv-cobalto-dim, #dce4ef);
-  color: var(--slv-cobalto, #1b3a6b);
-  font-size: var(--size-caption, 12px);
+  background: var(--status-active-bg, #dcefe2);
+  color: var(--status-active-ink, #1f6339);
+  font-family: var(--font-mono, monospace);
+  font-size: var(--size-mono-sm, 12px);
   font-weight: 600;
+  text-transform: uppercase;
+}
+
+.polizas__detail {
+  display: grid;
+  gap: var(--space-7, 16px);
+  max-width: 760px;
+  padding: var(--space-8, 20px);
+}
+
+.polizas__detail-header {
+  align-items: flex-start;
 }
 
 .polizas__details {
@@ -71,6 +156,8 @@
   display: flex;
   justify-content: space-between;
   gap: var(--space-5, 12px);
+  border-bottom: 1px solid rgb(16 27 45 / 8%);
+  padding-bottom: var(--space-4, 10px);
 }
 
 .polizas__details dt {
@@ -82,14 +169,31 @@
   text-align: right;
 }
 
-.polizas__coverage summary {
-  cursor: pointer;
-  color: var(--slv-cobalto, #1b3a6b);
-}
-
 .polizas__coverage ul {
-  margin-bottom: 0;
+  display: grid;
+  gap: var(--space-3, 8px);
+  margin: var(--space-4, 10px) 0 0;
   padding-left: 20px;
   color: var(--ink-72, rgb(16 27 45 / 72%));
   font-size: var(--size-body-sm, 15px);
+}
+
+@media (width <= 720px) {
+  .polizas__intro {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .polizas__table {
+    overflow-x: auto;
+  }
+
+  .polizas__table-head,
+  .polizas__table-row {
+    min-width: 650px;
+  }
+
+  .polizas__detail-header {
+    align-items: flex-start;
+  }
 }

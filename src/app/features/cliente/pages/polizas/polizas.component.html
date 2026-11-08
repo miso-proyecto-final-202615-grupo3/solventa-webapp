@@ -1,58 +1,99 @@
 <section class="polizas" aria-labelledby="polizas-title">
-  <h1 id="polizas-title" class="polizas__title">Mis pólizas</h1>
+  <header class="polizas__intro">
+    <div>
+      <p class="polizas__kicker">cartera</p>
+      <h1 id="polizas-title" class="polizas__title">Pólizas de tu cuenta</h1>
+      @if (!cargando() && !error()) {
+        <p class="polizas__count">{{ polizas().length }} pólizas activas · ninguna vencida</p>
+      }
+    </div>
+    <a class="polizas__action" routerLink="/cliente/adquirir">Adquirir otra</a>
+  </header>
 
   @if (cargando()) {
     <p class="polizas__message" role="status">Cargando tus pólizas...</p>
   } @else if (error()) {
     <p class="polizas__message polizas__message--error" role="alert">{{ error() }}</p>
   } @else if (polizas().length === 0) {
-    <p class="polizas__message">Aún no tienes pólizas activas.</p>
-    <p class="polizas__text">
-      Cuando adquieras un producto, lo verás y podrás gestionarlo desde aquí.
-    </p>
+    <div class="polizas__empty">
+      <p class="polizas__message">Aún no tienes pólizas activas.</p>
+      <p class="polizas__text">
+        Cuando adquieras un producto, lo verás y podrás gestionarlo desde aquí.
+      </p>
+    </div>
   } @else {
-    <div class="polizas__grid">
+    <div class="polizas__table" role="table" aria-label="Pólizas activas">
+      <div class="polizas__table-head" role="row">
+        <span>Póliza</span>
+        <span>Estado</span>
+        <span>Vigencia</span>
+        <span class="polizas__numeric">Prima</span>
+      </div>
       @for (poliza of polizas(); track poliza.poliza_id) {
-        <article class="polizas__card">
-          <header class="polizas__header">
-            <div>
-              <p class="polizas__eyebrow">Póliza</p>
-              <h2>{{ poliza.numero }}</h2>
-            </div>
-            <span class="polizas__status">{{ poliza.estado }}</span>
-          </header>
-
-          <dl class="polizas__details">
-            <div>
-              <dt>Vigencia</dt>
-              <dd>
-                {{ poliza.vigencia_desde | date: 'dd/MM/yyyy' }} -
-                {{ poliza.vigencia_hasta | date: 'dd/MM/yyyy' }}
-              </dd>
-            </div>
-            <div>
-              <dt>Prima total</dt>
-              <dd>{{ poliza.prima_total | number: '1.2-2' }} COP</dd>
-            </div>
-            <div>
-              <dt>Coberturas</dt>
-              <dd>{{ poliza.coberturas.length }}</dd>
-            </div>
-          </dl>
-
-          <details class="polizas__coverage">
-            <summary>Ver coberturas</summary>
-            <ul>
-              @for (cobertura of poliza.coberturas; track cobertura.cobertura_id) {
-                <li>
-                  Prima {{ cobertura.prima | number: '1.2-2' }} COP · Límite
-                  {{ cobertura.limite_asegurado | number: '1.2-2' }} COP
-                </li>
-              }
-            </ul>
-          </details>
-        </article>
+        <button
+          class="polizas__table-row"
+          [class.polizas__table-row--selected]="seleccionada()?.poliza_id === poliza.poliza_id"
+          type="button"
+          role="row"
+          (click)="seleccionar(poliza)"
+        >
+          <span class="polizas__mono">{{ poliza.numero }}</span>
+          <span class="polizas__status">{{ poliza.estado }}</span>
+          <span
+            >{{ poliza.vigencia_desde | date: 'dd/MM/yyyy' }} -
+            {{ poliza.vigencia_hasta | date: 'dd/MM/yyyy' }}</span
+          >
+          <span class="polizas__numeric">{{ poliza.prima_total | number: '1.2-2' }} COP</span>
+        </button>
       }
     </div>
+
+    @if (seleccionada(); as poliza) {
+      <article class="polizas__detail" aria-labelledby="poliza-detail-title">
+        <header class="polizas__detail-header">
+          <div>
+            <p class="polizas__kicker">detalle de póliza</p>
+            <h2 id="poliza-detail-title">{{ poliza.numero }}</h2>
+          </div>
+          <span class="polizas__status">{{ poliza.estado }}</span>
+        </header>
+        <dl class="polizas__details">
+          <div>
+            <dt>Prima total</dt>
+            <dd>{{ poliza.prima_total | number: '1.2-2' }} COP</dd>
+          </div>
+          <div>
+            <dt>Vigencia</dt>
+            <dd>
+              {{ poliza.vigencia_desde | date: 'dd/MM/yyyy' }} -
+              {{ poliza.vigencia_hasta | date: 'dd/MM/yyyy' }}
+            </dd>
+          </div>
+          <div>
+            <dt>Coberturas</dt>
+            <dd>{{ poliza.coberturas.length }}</dd>
+          </div>
+        </dl>
+        <div class="polizas__coverage">
+          <p class="polizas__eyebrow">Coberturas incluidas</p>
+          <ul>
+            @for (cobertura of poliza.coberturas; track cobertura.cobertura_id) {
+              <li>
+                Prima {{ cobertura.prima | number: '1.2-2' }} COP · Límite
+                {{ cobertura.limite_asegurado | number: '1.2-2' }} COP · Deducible
+                {{ cobertura.deducible | number: '1.2-2' }} COP
+              </li>
+            }
+          </ul>
+        </div>
+        <p class="polizas__note">
+          Para renovar, modificar o cancelar, escríbenos o llámanos. Un analista hace el cambio y te
+          lo confirma por correo.
+        </p>
+      </article>
+    }
+    <p class="polizas__hint">
+      Haz clic en una fila para ver el detalle y las acciones de ciclo de vida.
+    </p>
   }
 </section>
