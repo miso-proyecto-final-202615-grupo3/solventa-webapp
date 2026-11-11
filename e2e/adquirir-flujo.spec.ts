@@ -60,9 +60,7 @@ test.beforeEach(async ({ page }) => {
   await page.route('**/api/v1/bff-web/cotizaciones', (route) =>
     route.fulfill({ status: 200, json: cotizacion }),
   );
-  await page.route(CONDICIONES, (route) =>
-    route.fulfill({ status: 200, json: condiciones }),
-  );
+  await page.route(CONDICIONES, (route) => route.fulfill({ status: 200, json: condiciones }));
 
   await page.goto('/login');
   await page.getByLabel('Correo').fill('cliente@correo.com');
