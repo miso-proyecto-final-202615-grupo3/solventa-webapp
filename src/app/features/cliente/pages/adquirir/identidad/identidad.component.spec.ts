@@ -68,9 +68,15 @@ describe('IdentidadComponent', () => {
     elegir(el, '#doc-frontal', FRONTAL);
     fixture.detectChanges();
     expect(iniciar.disabled).toBe(true);
+    expect(el.querySelector('[data-testid="preview-frontal"] img')?.getAttribute('alt')).toContain(
+      'frontal',
+    );
     elegir(el, '#doc-reverso', REVERSO);
     fixture.detectChanges();
     expect(iniciar.disabled).toBe(false);
+    expect(el.querySelector('[data-testid="preview-reverso"] img')?.getAttribute('alt')).toContain(
+      'reverso',
+    );
   });
 
   it('rechaza archivos que no son imágenes', async () => {

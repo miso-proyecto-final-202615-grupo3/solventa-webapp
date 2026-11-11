@@ -45,6 +45,8 @@ export class IdentidadComponent implements OnInit, OnDestroy {
   });
   protected readonly frontal = signal<File | null>(null);
   protected readonly reverso = signal<File | null>(null);
+  protected readonly frontalPreview = signal<string | null>(null);
+  protected readonly reversoPreview = signal<string | null>(null);
   protected readonly resultado = signal<VerificacionKycAml | null>(null);
   /** La verificación sigue pendiente tras agotar las consultas automáticas. */
   protected readonly enProceso = signal(false);
@@ -65,6 +67,8 @@ export class IdentidadComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.destruido = true;
+    this.liberarPrevisualizacion(this.frontalPreview());
+    this.liberarPrevisualizacion(this.reversoPreview());
   }
 
   protected async cargarPerfil(): Promise<void> {
@@ -100,6 +104,9 @@ export class IdentidadComponent implements OnInit, OnDestroy {
       errores[lado] = 'Selecciona una imagen (JPG o PNG).';
       valido = null;
     }
+    const preview = lado === 'frontal' ? this.frontalPreview : this.reversoPreview;
+    this.liberarPrevisualizacion(preview());
+    preview.set(valido ? URL.createObjectURL(valido) : null);
     this.errorArchivo.set(errores);
     (lado === 'frontal' ? this.frontal : this.reverso).set(valido);
   }
@@ -147,9 +154,17 @@ export class IdentidadComponent implements OnInit, OnDestroy {
     this.verificacionId = null;
     this.resultado.set(null);
     this.enProceso.set(false);
+    this.liberarPrevisualizacion(this.frontalPreview());
+    this.liberarPrevisualizacion(this.reversoPreview());
+    this.frontalPreview.set(null);
+    this.reversoPreview.set(null);
     this.frontal.set(null);
     this.reverso.set(null);
     this.error.set(null);
+  }
+
+  private liberarPrevisualizacion(url: string | null): void {
+    if (url) URL.revokeObjectURL(url);
   }
 
   protected async siguiente(): Promise<void> {

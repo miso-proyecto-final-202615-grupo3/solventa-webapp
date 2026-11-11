@@ -92,36 +92,58 @@
           ambos lados.
         </p>
 
-        <div class="field">
-          <label for="doc-frontal">Documento de identidad · frontal</label>
-          <input
-            id="doc-frontal"
-            class="input adq__archivo"
-            type="file"
-            accept="image/*"
-            [disabled]="verificando()"
-            [attr.aria-invalid]="errorArchivo().frontal ? true : null"
-            (change)="seleccionar('frontal', $event)"
-          />
-          @if (errorArchivo().frontal; as msg) {
-            <p class="field__error">{{ msg }}</p>
-          }
-        </div>
+        <div class="adq__documentos" aria-label="Imágenes del documento de identidad">
+          <article class="adq__documento-card">
+            <h2 class="adq__subtitle">Frontal</h2>
+            <div class="adq__preview" data-testid="preview-frontal">
+              @if (frontalPreview(); as preview) {
+                <img [src]="preview" alt="Previsualización frontal del documento de identidad" />
+              } @else {
+                <span>La imagen frontal aparecerá aquí</span>
+              }
+            </div>
+            <div class="field">
+              <label for="doc-frontal">Documento de identidad · frontal</label>
+              <input
+                id="doc-frontal"
+                class="input adq__archivo"
+                type="file"
+                accept="image/*"
+                [disabled]="verificando()"
+                [attr.aria-invalid]="errorArchivo().frontal ? true : null"
+                (change)="seleccionar('frontal', $event)"
+              />
+              @if (errorArchivo().frontal; as msg) {
+                <p class="field__error">{{ msg }}</p>
+              }
+            </div>
+          </article>
 
-        <div class="field">
-          <label for="doc-reverso">Documento de identidad · reverso</label>
-          <input
-            id="doc-reverso"
-            class="input adq__archivo"
-            type="file"
-            accept="image/*"
-            [disabled]="verificando()"
-            [attr.aria-invalid]="errorArchivo().reverso ? true : null"
-            (change)="seleccionar('reverso', $event)"
-          />
-          @if (errorArchivo().reverso; as msg) {
-            <p class="field__error">{{ msg }}</p>
-          }
+          <article class="adq__documento-card">
+            <h2 class="adq__subtitle">Reverso</h2>
+            <div class="adq__preview" data-testid="preview-reverso">
+              @if (reversoPreview(); as preview) {
+                <img [src]="preview" alt="Previsualización reverso del documento de identidad" />
+              } @else {
+                <span>La imagen del reverso aparecerá aquí</span>
+              }
+            </div>
+            <div class="field">
+              <label for="doc-reverso">Documento de identidad · reverso</label>
+              <input
+                id="doc-reverso"
+                class="input adq__archivo"
+                type="file"
+                accept="image/*"
+                [disabled]="verificando()"
+                [attr.aria-invalid]="errorArchivo().reverso ? true : null"
+                (change)="seleccionar('reverso', $event)"
+              />
+              @if (errorArchivo().reverso; as msg) {
+                <p class="field__error">{{ msg }}</p>
+              }
+            </div>
+          </article>
         </div>
 
         @if (verificando()) {
