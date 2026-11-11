@@ -49,4 +49,39 @@ describe('aplanarParticulares', () => {
       { etiqueta: 'Detalle 1 · Nombre', valor: 'A' },
     ]);
   });
+
+  it('formatea montos de prima, límite y deducible con la moneda indicada', () => {
+    const entradas = aplanarParticulares(
+      {
+        prima_total: 2500000,
+        Condiciones: {
+          Prima: '1250000',
+          'Limite asegurado': 10000000,
+          Deducible: 500000,
+        },
+      },
+      '',
+      'COP',
+    );
+
+    expect(entradas.map((entrada) => entrada.valor)).toEqual([
+      expect.stringMatching(/2\.500\.000/),
+      expect.stringMatching(/1\.250\.000/),
+      expect.stringMatching(/10\.000\.000/),
+      expect.stringMatching(/500\.000/),
+    ]);
+    expect(entradas.every((entrada) => /COP|\$/.test(entrada.valor))).toBe(true);
+  });
+
+  it('muestra las fechas de vigencia sin hora', () => {
+    const entradas = aplanarParticulares({
+      'Vigencia Desde': '2026-11-10T18:45:00Z',
+      'Vigencia Hasta': '2027-11-10',
+    });
+
+    expect(entradas).toEqual([
+      { etiqueta: 'Vigencia Desde', valor: '10/11/2026' },
+      { etiqueta: 'Vigencia Hasta', valor: '10/11/2027' },
+    ]);
+  });
 });

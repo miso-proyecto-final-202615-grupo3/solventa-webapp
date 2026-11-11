@@ -38,7 +38,11 @@ export class CondicionesComponent implements OnInit {
     bloquesTexto(this.condiciones()?.condiciones_generales ?? ''),
   );
   protected readonly particulares = computed(() =>
-    aplanarParticulares(this.condiciones()?.condiciones_particulares ?? {}),
+    aplanarParticulares(
+      this.condiciones()?.condiciones_particulares ?? {},
+      '',
+      this.cotizacion()?.moneda ?? 'COP',
+    ),
   );
 
   async ngOnInit(): Promise<void> {

@@ -21,7 +21,7 @@
           <h2 id="cond-generales" class="adq__subtitle">Condiciones generales</h2>
           <p class="adq__hint">
             Versión {{ cond.version_condiciones_generales }} ·
-            {{ cond.creada_en | date: 'dd/MM/yyyy HH:mm' }}
+            {{ cond.creada_en | date: 'dd/MM/yyyy' }}
           </p>
           <div class="adq__legal" data-testid="condiciones-generales" tabindex="0">
             @for (b of generales(); track $index) {
