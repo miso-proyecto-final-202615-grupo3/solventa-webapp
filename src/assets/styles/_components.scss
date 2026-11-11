@@ -138,4 +138,10 @@
     background: var(--surface-alert-soft);
     color: var(--text-alert);
   }
+
+  &--ok {
+    border-left-color: var(--slv-verde);
+    background: var(--surface-success-soft);
+    color: var(--text-success);
+  }
 }
