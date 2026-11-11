@@ -86,6 +86,12 @@
     <div class="adq__acciones">
       <a
         class="btn btn--primary btn--lg"
+        data-testid="siguiente"
+        [routerLink]="['/cliente/adquirir', c.producto_codigo, 'condiciones']"
+        >Siguiente paso</a
+      >
+      <a
+        class="btn btn--secondary btn--lg"
         [routerLink]="['/cliente/adquirir', c.producto_codigo, 'cotizar']"
         >Cambiar los datos</a
       >

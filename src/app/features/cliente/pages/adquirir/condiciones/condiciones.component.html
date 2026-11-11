@@ -1,0 +1,103 @@
+@if (cotizacion(); as c) {
+  <section class="adq adq--form">
+    <app-pasos-compra [actual]="2" />
+
+    <div>
+      <p class="kicker">{{ c.producto_codigo }}</p>
+      <h1 class="adq__title">Condiciones de la póliza</h1>
+    </div>
+
+    @if (cargando()) {
+      <p class="adq__text" role="status">Cargando las condiciones…</p>
+    }
+
+    @if (error(); as msg) {
+      <div class="callout callout--alert" role="alert" data-testid="error">{{ msg }}</div>
+    }
+
+    @if (condiciones(); as cond) {
+      <form class="adq__form" (submit)="$event.preventDefault(); siguiente()" novalidate>
+        <article class="adq__documento" aria-labelledby="cond-generales">
+          <h2 id="cond-generales" class="adq__subtitle">Condiciones generales</h2>
+          <p class="adq__hint">
+            Versión {{ cond.version_condiciones_generales }} ·
+            {{ cond.creada_en | date: 'dd/MM/yyyy HH:mm' }}
+          </p>
+          <div class="adq__legal" data-testid="condiciones-generales" tabindex="0">
+            @for (b of generales(); track $index) {
+              @switch (b.tipo) {
+                @case ('titulo') {
+                  <h3 class="adq__legal-titulo">{{ b.texto }}</h3>
+                }
+                @case ('lista') {
+                  <ul class="adq__legal-lista">
+                    @for (item of b.items; track $index) {
+                      <li>{{ item }}</li>
+                    }
+                  </ul>
+                }
+                @default {
+                  <p class="adq__legal-parrafo">{{ b.texto }}</p>
+                }
+              }
+            }
+          </div>
+        </article>
+
+        @if (particulares().length > 0) {
+          <article class="adq__documento" aria-labelledby="cond-particulares">
+            <h2 id="cond-particulares" class="adq__subtitle">Condiciones particulares</h2>
+            <dl class="adq__particulares" data-testid="condiciones-particulares">
+              @for (p of particulares(); track $index) {
+                <div class="adq__particular">
+                  <dt>{{ p.etiqueta }}</dt>
+                  <dd>{{ p.valor }}</dd>
+                </div>
+              }
+            </dl>
+          </article>
+        }
+
+        <label class="adq__check" for="aceptar-condiciones">
+          <input
+            id="aceptar-condiciones"
+            type="checkbox"
+            [checked]="aceptadas()"
+            [disabled]="enviando()"
+            (change)="alternarAceptacion($event)"
+          />
+          He leído y acepto las condiciones generales y particulares de la póliza.
+        </label>
+
+        <div class="adq__acciones">
+          <button
+            type="submit"
+            class="btn btn--primary btn--lg"
+            data-testid="siguiente"
+            [disabled]="!aceptadas() || enviando()"
+          >
+            {{ enviando() ? 'Registrando…' : 'Siguiente paso' }}
+          </button>
+          <button
+            type="button"
+            class="btn btn--secondary btn--lg"
+            data-testid="rechazar"
+            [disabled]="enviando()"
+            (click)="rechazar()"
+          >
+            Rechazar condiciones
+          </button>
+          <a
+            class="btn btn--secondary btn--lg"
+            [routerLink]="['/cliente/adquirir', c.producto_codigo, 'cotizacion']"
+            >Volver</a
+          >
+        </div>
+      </form>
+    } @else if (!cargando()) {
+      <a class="link" [routerLink]="['/cliente/adquirir', c.producto_codigo, 'cotizacion']"
+        >Volver al resultado de la cotización</a
+      >
+    }
+  </section>
+}

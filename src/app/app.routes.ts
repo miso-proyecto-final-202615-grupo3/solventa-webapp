@@ -54,6 +54,33 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'adquirir/:codigo/condiciones',
+        title: 'Condiciones de la póliza · Solventa',
+        data: { kicker: 'adquirir', titulo: 'Condiciones' },
+        loadComponent: () =>
+          import('./features/cliente/pages/adquirir/condiciones/condiciones.component').then(
+            (m) => m.CondicionesComponent,
+          ),
+      },
+      {
+        path: 'adquirir/:codigo/identidad',
+        title: 'Verificación de identidad · Solventa',
+        data: { kicker: 'adquirir', titulo: 'Identidad' },
+        loadComponent: () =>
+          import('./features/cliente/pages/adquirir/identidad/identidad.component').then(
+            (m) => m.IdentidadComponent,
+          ),
+      },
+      {
+        path: 'adquirir/:codigo/pago',
+        title: 'Pago · Solventa',
+        data: { kicker: 'adquirir', titulo: 'Pago' },
+        loadComponent: () =>
+          import('./features/cliente/pages/adquirir/pago/pago.component').then(
+            (m) => m.PagoComponent,
+          ),
+      },
+      {
         path: 'perfil',
         title: 'Perfil · Solventa',
         data: { kicker: 'perfil', titulo: 'Tratamiento de datos' },

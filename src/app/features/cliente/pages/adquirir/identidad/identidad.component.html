@@ -1,0 +1,157 @@
+@if (cotizacion(); as c) {
+  <section class="adq adq--form">
+    <app-pasos-compra [actual]="3" />
+
+    <div>
+      <p class="kicker">{{ c.producto_codigo }}</p>
+      <h1 class="adq__title">Verificación de identidad</h1>
+    </div>
+
+    @if (cargando()) {
+      <p class="adq__text" role="status">Consultando tu estado de verificación…</p>
+    }
+
+    @if (error(); as msg) {
+      <div class="callout callout--alert" role="alert" data-testid="error">{{ msg }}</div>
+    }
+
+    @if (resultado(); as r) {
+      @if (aprobado()) {
+        <div class="callout callout--ok" role="status" data-testid="resultado-aprobado">
+          <strong>Verificación aprobada.</strong> Validamos tu identidad (KYC) y los controles AML.
+        </div>
+        <div class="adq__acciones">
+          <button
+            type="button"
+            class="btn btn--primary btn--lg"
+            data-testid="siguiente"
+            (click)="siguiente()"
+          >
+            Siguiente paso
+          </button>
+        </div>
+      } @else {
+        <div class="callout callout--alert" role="alert" data-testid="resultado-rechazado">
+          <strong>Verificación rechazada.</strong> No pudimos validar tu identidad con las fotos
+          enviadas.
+          <ul>
+            <li>KYC: {{ etiquetaResultado(r.resultado_kyc) }}</li>
+            <li>AML: {{ etiquetaResultado(r.resultado_aml) }}</li>
+          </ul>
+        </div>
+        <div class="adq__acciones">
+          <button
+            type="button"
+            class="btn btn--primary btn--lg"
+            data-testid="reintentar"
+            (click)="reintentar()"
+          >
+            Volver a intentar
+          </button>
+          <a class="btn btn--secondary btn--lg" routerLink="/cliente/adquirir">Cancelar</a>
+        </div>
+      }
+    } @else if (enProceso()) {
+      <div class="callout" role="status" data-testid="en-proceso">
+        Tu verificación sigue en proceso. Consulta de nuevo en unos instantes.
+      </div>
+      <div class="adq__acciones">
+        <button
+          type="button"
+          class="btn btn--primary btn--lg"
+          [disabled]="verificando()"
+          (click)="consultarDeNuevo()"
+        >
+          {{ verificando() ? 'Consultando…' : 'Consultar de nuevo' }}
+        </button>
+      </div>
+    } @else if (yaVerificado()) {
+      <div class="callout callout--ok" role="status" data-testid="ya-verificado">
+        <strong>Tu identidad ya fue verificada.</strong> Cumples la verificación KYC y AML, no
+        necesitas repetirla.
+      </div>
+      <div class="adq__acciones">
+        <button
+          type="button"
+          class="btn btn--primary btn--lg"
+          data-testid="siguiente"
+          (click)="siguiente()"
+        >
+          Siguiente paso
+        </button>
+        <a
+          class="btn btn--secondary btn--lg"
+          [routerLink]="['/cliente/adquirir', c.producto_codigo, 'condiciones']"
+          >Volver</a
+        >
+      </div>
+    } @else if (!cargando() && !perfilFallido()) {
+      <form class="adq__form" (submit)="$event.preventDefault(); iniciar()" novalidate>
+        <p class="adq__text">
+          Para continuar necesitamos verificar tu identidad. Sube una foto clara de tu documento por
+          ambos lados.
+        </p>
+
+        <div class="field">
+          <label for="doc-frontal">Documento de identidad · frontal</label>
+          <input
+            id="doc-frontal"
+            class="input adq__archivo"
+            type="file"
+            accept="image/*"
+            [disabled]="verificando()"
+            [attr.aria-invalid]="errorArchivo().frontal ? true : null"
+            (change)="seleccionar('frontal', $event)"
+          />
+          @if (errorArchivo().frontal; as msg) {
+            <p class="field__error">{{ msg }}</p>
+          }
+        </div>
+
+        <div class="field">
+          <label for="doc-reverso">Documento de identidad · reverso</label>
+          <input
+            id="doc-reverso"
+            class="input adq__archivo"
+            type="file"
+            accept="image/*"
+            [disabled]="verificando()"
+            [attr.aria-invalid]="errorArchivo().reverso ? true : null"
+            (change)="seleccionar('reverso', $event)"
+          />
+          @if (errorArchivo().reverso; as msg) {
+            <p class="field__error">{{ msg }}</p>
+          }
+        </div>
+
+        @if (verificando()) {
+          <p class="adq__text" role="status" data-testid="verificando">
+            Verificando tu identidad, esto puede tardar unos segundos…
+          </p>
+        }
+
+        <div class="adq__acciones">
+          <button
+            type="submit"
+            class="btn btn--primary btn--lg"
+            data-testid="iniciar"
+            [disabled]="!puedeIniciar()"
+          >
+            {{ verificando() ? 'Verificando…' : 'Iniciar verificación KYC y AML' }}
+          </button>
+          <a
+            class="btn btn--secondary btn--lg"
+            [routerLink]="['/cliente/adquirir', c.producto_codigo, 'condiciones']"
+            >Volver</a
+          >
+        </div>
+      </form>
+    } @else if (!cargando()) {
+      <div class="adq__acciones">
+        <button type="button" class="btn btn--primary btn--lg" (click)="cargarPerfil()">
+          Reintentar
+        </button>
+      </div>
+    }
+  </section>
+}
