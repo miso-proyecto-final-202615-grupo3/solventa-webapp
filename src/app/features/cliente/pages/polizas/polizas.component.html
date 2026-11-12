@@ -51,14 +51,18 @@
       <article class="polizas__detail" aria-labelledby="poliza-detail-title">
         <header class="polizas__detail-header">
           <div>
-            <p class="polizas__kicker">detalle de póliza</p>
-            <h2 id="poliza-detail-title">{{ poliza.numero }}</h2>
+            <p class="polizas__kicker">{{ poliza.numero }}</p>
+            <h2 id="poliza-detail-title">{{ poliza.ramo }}</h2>
           </div>
           <span class="polizas__status">{{ poliza.estado }}</span>
         </header>
         <dl class="polizas__details">
           <div>
-            <dt>Prima total</dt>
+            <dt>Titular</dt>
+            <dd>{{ correoCliente }}</dd>
+          </div>
+          <div>
+            <dt>Prima mensual</dt>
             <dd>{{ poliza.prima_total | number: '1.2-2' }} COP</dd>
           </div>
           <div>
@@ -69,8 +73,16 @@
             </dd>
           </div>
           <div>
-            <dt>Coberturas</dt>
-            <dd>{{ poliza.coberturas.length }}</dd>
+            <dt>Deducible</dt>
+            <dd>{{ deducible(poliza) }} COP</dd>
+          </div>
+          <div>
+            <dt>Cobertura máxima</dt>
+            <dd>{{ coberturaMaxima(poliza) }} COP</dd>
+          </div>
+          <div>
+            <dt>Cobertura</dt>
+            <dd>{{ poliza.coberturas.length }} coberturas</dd>
           </div>
         </dl>
         <div class="polizas__coverage">
@@ -85,10 +97,28 @@
             }
           </ul>
         </div>
-        <p class="polizas__note">
-          Para renovar, modificar o cancelar, escríbenos o llámanos. Un analista hace el cambio y te
-          lo confirma por correo.
-        </p>
+        <section class="polizas__history" aria-labelledby="poliza-history-title">
+          <p class="polizas__eyebrow">historial</p>
+          <h3 id="poliza-history-title">Eventos de la póliza</h3>
+          <div class="polizas__event">
+            <span class="polizas__event-dot" aria-hidden="true"></span>
+            <div>
+              <strong>Póliza emitida</strong>
+              @if (poliza.emitida_en) {
+                <time [attr.datetime]="poliza.emitida_en">{{
+                  poliza.emitida_en | date: 'dd/MM/yyyy' : 'UTC'
+                }}</time>
+              }
+            </div>
+          </div>
+        </section>
+        <aside class="polizas__callout">
+          <strong>Cómo pedir un cambio</strong>
+          <span
+            >Para renovar, modificar o cancelar, escríbenos o llámanos. Un analista hace el cambio y
+            te lo confirma por correo.</span
+          >
+        </aside>
       </article>
     }
     <p class="polizas__hint">

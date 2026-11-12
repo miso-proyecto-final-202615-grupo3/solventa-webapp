@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { AuthService } from '../../../../core/auth/auth.service';
 import { PolizaService } from '../../../../core/services/poliza.service';
 import { PolizasComponent } from './polizas.component';
 
@@ -9,6 +10,7 @@ describe('PolizasComponent', () => {
       imports: [PolizasComponent],
       providers: [
         provideRouter([]),
+        { provide: AuthService, useValue: { email: 'cliente@example.com' } },
         { provide: PolizaService, useValue: { listarMisPolizas: () => Promise.resolve([]) } },
       ],
     }).compileComponents();
@@ -56,6 +58,7 @@ describe('PolizasComponent', () => {
           },
         },
         provideRouter([]),
+        { provide: AuthService, useValue: { email: 'cliente@example.com' } },
       ],
     }).compileComponents();
     const fixture = TestBed.createComponent(PolizasComponent);
