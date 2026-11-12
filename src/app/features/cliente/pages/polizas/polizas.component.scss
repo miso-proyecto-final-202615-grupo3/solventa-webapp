@@ -4,6 +4,22 @@
   max-width: 1000px;
 }
 
+.polizas--detail {
+  max-width: 760px;
+}
+
+.polizas__back {
+  justify-self: start;
+  color: var(--slv-cobalto, #1b3a6b);
+  font-size: var(--size-body-sm, 15px);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.polizas__back:hover {
+  text-decoration: underline;
+}
+
 .polizas__intro,
 .polizas__detail-header {
   display: flex;

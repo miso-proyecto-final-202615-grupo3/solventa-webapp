@@ -27,6 +27,15 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'polizas/:polizaId',
+        title: 'Detalle de póliza · Solventa',
+        data: { kicker: 'cartera', titulo: 'Detalle de póliza' },
+        loadComponent: () =>
+          import('./features/cliente/pages/polizas/polizas.component').then(
+            (m) => m.PolizasComponent,
+          ),
+      },
+      {
         path: 'adquirir',
         title: 'Adquirir · Solventa',
         data: { kicker: 'adquirir', titulo: 'Catálogo' },

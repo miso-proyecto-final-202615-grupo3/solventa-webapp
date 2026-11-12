@@ -1,7 +1,7 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { Poliza } from '../../../../core/models/cotizacion';
 import { PolizaService } from '../../../../core/services/poliza.service';
@@ -16,6 +16,10 @@ import { PolizaService } from '../../../../core/services/poliza.service';
 export class PolizasComponent implements OnInit {
   private readonly servicio = inject(PolizaService);
   private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+
+  readonly detalleId = this.route.snapshot.paramMap.get('polizaId');
 
   readonly cargando = signal(true);
   readonly error = signal<string | null>(null);
@@ -26,6 +30,11 @@ export class PolizasComponent implements OnInit {
     try {
       const polizas = await this.servicio.listarMisPolizas();
       this.polizas.set(polizas);
+      if (this.detalleId) {
+        this.seleccionada.set(
+          polizas.find((poliza) => poliza.poliza_id === this.detalleId) ?? null,
+        );
+      }
     } catch (err) {
       this.error.set(this.mensajeError(err));
     } finally {
@@ -34,7 +43,7 @@ export class PolizasComponent implements OnInit {
   }
 
   seleccionar(poliza: Poliza): void {
-    this.seleccionada.set(poliza);
+    void this.router.navigate(['/cliente/polizas', poliza.poliza_id]);
   }
 
   get correoCliente(): string {
