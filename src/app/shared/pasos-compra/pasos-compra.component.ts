@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-const PASOS = ['Datos', 'Prima', 'Pago', 'Emitida'] as const;
+const PASOS = ['Datos', 'Prima', 'Condiciones', 'Identidad', 'Pago', 'Emitida'] as const;
 
 @Component({
   selector: 'app-pasos-compra',
