@@ -55,6 +55,12 @@ test.describe('Login', () => {
         json: { access_token: 'tok', id_token: 'id', token_type: 'Bearer' },
       }),
     );
+    await page.route('**/api/v1/bff-web/consentimientos?correo=*', (route) =>
+      route.fulfill({ status: 200, json: { cliente: { id: 'cliente-e2e' } } }),
+    );
+    await page.route('**/api/v1/bff-web/polizas/mis-polizas', (route) =>
+      route.fulfill({ status: 200, json: [] }),
+    );
     await page.getByLabel('Correo').fill('cliente@correo.com');
     await page.getByLabel('Contraseña').fill('secreto');
     await page.getByRole('button', { name: 'Entrar' }).click();
