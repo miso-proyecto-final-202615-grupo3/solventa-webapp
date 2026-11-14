@@ -106,6 +106,7 @@ describe('IdentidadComponent', () => {
     const req = ctx.http.expectOne(`${BASE}/verificaciones-kyc-aml`);
     expect(req.request.method).toBe('POST');
     const cuerpo = req.request.body as FormData;
+    expect(cuerpo.get('cotizacion_id')).toBe(COTIZACION.cotizacion_id);
     expect((cuerpo.get('documento_frontal') as File).name).toBe('frente.jpg');
     expect((cuerpo.get('documento_reverso') as File).name).toBe('reverso.png');
     expect(req.request.headers.has('Idempotency-Key')).toBe(true);

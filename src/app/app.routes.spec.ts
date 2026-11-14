@@ -10,13 +10,16 @@ describe('routes', () => {
     expect(paths.indexOf('terminos')).toBeLessThan(paths.indexOf('**'));
   });
 
-  it.each(['login', 'registro', 'terminos', 'operador/auditoria-consentimiento'])(
-    'carga de forma diferida la ruta %s',
-    async (path) => {
-      const route = routes.find((r) => r.path === path);
+  it.each([
+    'login',
+    'registro',
+    'terminos',
+    'operador/auditoria-consentimiento',
+    'operador/auditoria-emision',
+  ])('carga de forma diferida la ruta %s', async (path) => {
+    const route = routes.find((r) => r.path === path);
 
-      expect(route?.loadComponent).toBeDefined();
-      expect(await (route?.loadComponent as () => Promise<unknown>)()).toBeTruthy();
-    },
-  );
+    expect(route?.loadComponent).toBeDefined();
+    expect(await (route?.loadComponent as () => Promise<unknown>)()).toBeTruthy();
+  });
 });

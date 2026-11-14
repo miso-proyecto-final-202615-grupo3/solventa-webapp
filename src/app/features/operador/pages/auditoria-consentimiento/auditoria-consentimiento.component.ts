@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import {
   AuditoriaConsentimientoResponse,
@@ -17,7 +18,7 @@ const ETIQUETAS_ACCION: Record<TipoAccionConsentimiento, string> = {
 };
 
 @Component({
-  imports: [ReactiveFormsModule, DatePipe],
+  imports: [ReactiveFormsModule, DatePipe, RouterLink],
   selector: 'app-auditoria-consentimiento',
   styleUrl: './auditoria-consentimiento.component.scss',
   templateUrl: './auditoria-consentimiento.component.html',

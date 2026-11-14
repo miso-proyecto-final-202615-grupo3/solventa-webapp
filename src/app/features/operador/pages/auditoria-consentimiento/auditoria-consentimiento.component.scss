@@ -2,6 +2,15 @@
   max-width: var(--content-max, 920px);
 }
 
+.auditoria__navigation {
+  margin: 0 0 var(--space-6, 14px);
+  font-size: var(--size-ui, 14.5px);
+
+  a {
+    color: var(--slv-cobalto, #1b3a6b);
+  }
+}
+
 .auditoria__title {
   margin: 0 0 var(--space-3, 8px);
   font-family: var(--font-display, system-ui, sans-serif);

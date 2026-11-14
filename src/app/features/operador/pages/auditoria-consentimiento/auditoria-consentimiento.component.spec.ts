@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { AuditoriaConsentimientoResponse } from '../../../../core/models/auditoria-consentimiento';
 import { AuditoriaConsentimientoComponent } from './auditoria-consentimiento.component';
 
@@ -59,7 +60,7 @@ describe('AuditoriaConsentimientoComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AuditoriaConsentimientoComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
     fixture = TestBed.createComponent(AuditoriaConsentimientoComponent);
     httpMock = TestBed.inject(HttpTestingController);

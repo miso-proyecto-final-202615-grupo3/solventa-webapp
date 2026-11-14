@@ -19,10 +19,12 @@ export class VerificacionKycService {
 
   iniciar(
     clienteId: string,
+    cotizacionId: string,
     documentoFrontal: File,
     documentoReverso: File,
   ): Observable<IniciarVerificacionResponse> {
     const cuerpo = new FormData();
+    cuerpo.append('cotizacion_id', cotizacionId);
     cuerpo.append('documento_frontal', documentoFrontal);
     cuerpo.append('documento_reverso', documentoReverso);
     return this.http.post<IniciarVerificacionResponse>(

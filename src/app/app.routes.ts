@@ -115,6 +115,15 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'operador/auditoria-emision',
+    title: 'Trazabilidad de emisión · Solventa',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/operador/pages/auditoria-emision/auditoria-emision.component').then(
+        (m) => m.AuditoriaEmisionComponent,
+      ),
+  },
+  {
     path: 'operador/auditoria-consentimiento',
     title: 'Auditoría de consentimientos · Solventa',
     loadComponent: () =>

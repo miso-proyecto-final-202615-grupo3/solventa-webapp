@@ -122,7 +122,7 @@ export class IdentidadComponent implements OnInit, OnDestroy {
     this.resultado.set(null);
     try {
       const inicio = await firstValueFrom(
-        this.kyc.iniciar(cotizacion.cliente_id, frontal, reverso),
+        this.kyc.iniciar(cotizacion.cliente_id, cotizacion.cotizacion_id, frontal, reverso),
       );
       this.verificacionId = inicio.verificacion_id;
       await this.esperarResultado();

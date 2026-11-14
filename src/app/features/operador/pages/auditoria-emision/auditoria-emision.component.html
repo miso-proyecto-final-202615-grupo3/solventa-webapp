@@ -1,0 +1,81 @@
+<section class="auditoria-emision">
+  <nav class="auditoria-emision__nav" aria-label="Auditorías">
+    <a routerLink="/operador/auditoria-consentimiento">Auditoría de consentimientos</a>
+  </nav>
+  <h1 class="auditoria-emision__title">Trazabilidad de emisión</h1>
+  <p class="auditoria-emision__intro">
+    Reconstruye las decisiones y eventos del proceso de emisión. Consulta de solo lectura.
+  </p>
+
+  <form class="auditoria-emision__form" [formGroup]="form" (ngSubmit)="buscar()" novalidate>
+    <label class="auditoria-emision__field">
+      <span class="auditoria-emision__label">Número de póliza</span>
+      <input
+        class="auditoria-emision__control"
+        formControlName="numeroPoliza"
+        type="text"
+        placeholder="POL-20261113-AB12CD34"
+        autocomplete="off"
+        required
+      />
+    </label>
+    <button class="auditoria-emision__submit" type="submit" [disabled]="form.invalid || buscando()">
+      {{ buscando() ? 'Consultando…' : 'Consultar trazabilidad' }}
+    </button>
+  </form>
+
+  @if (error()) {
+    <p class="auditoria-emision__error" role="alert">{{ error() }}</p>
+  }
+
+  @if (resultado(); as res) {
+    <section class="auditoria-emision__resumen" aria-label="Póliza consultada">
+      <p class="auditoria-emision__kicker">póliza</p>
+      <h2>{{ res.numero }}</h2>
+      <p>
+        Referencia de cotización:
+        <span class="auditoria-emision__mono">{{ res.cotizacion_id }}</span>
+      </p>
+    </section>
+
+    @if (res.eventos.length === 0) {
+      <p class="auditoria-emision__empty">No hay eventos trazables para esta póliza.</p>
+    } @else {
+      <div class="auditoria-emision__table-wrap">
+        <table class="auditoria-emision__table">
+          <caption>
+            Eventos en orden cronológico · fecha y hora UTC
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Evento</th>
+              <th scope="col">Fecha y hora</th>
+              <th scope="col">Origen / actor</th>
+              <th scope="col">Resultado</th>
+              <th scope="col">Detalles</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (evento of res.eventos; track evento.evento_id) {
+              <tr>
+                <td>
+                  <strong>{{ etiquetaEvento(evento) }}</strong>
+                  <span class="auditoria-emision__reference">{{ evento.referencia_id }}</span>
+                </td>
+                <td>{{ evento.ocurrido_en | date: 'yyyy-MM-dd HH:mm:ss z' : 'UTC' }}</td>
+                <td>
+                  {{ evento.origen }}
+                  @if (evento.actor_id) {
+                    <span class="auditoria-emision__reference">{{ evento.actor_id }}</span>
+                  }
+                </td>
+                <td>{{ evento.resultado }}</td>
+                <td>{{ detalleEvento(evento) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+</section>
