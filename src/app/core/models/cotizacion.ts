@@ -85,6 +85,12 @@ export interface PolizaCobertura {
   prima: string;
 }
 
+export interface HistorialPoliza {
+  tipo: string;
+  ocurrido_en: string;
+  resultado: string;
+}
+
 export interface Poliza {
   poliza_id: string;
   cliente_id: string;
@@ -98,5 +104,6 @@ export interface Poliza {
   ramo: string;
   prima_total: string;
   coberturas: PolizaCobertura[];
+  historial: HistorialPoliza[];
   documento_url?: string | null;
 }

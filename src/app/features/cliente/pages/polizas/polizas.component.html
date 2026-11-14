@@ -61,17 +61,22 @@
       <section class="polizas__history" aria-labelledby="poliza-history-title">
         <p class="polizas__eyebrow">historial</p>
         <h2 id="poliza-history-title">Eventos de la póliza</h2>
-        <div class="polizas__event">
-          <span class="polizas__event-dot" aria-hidden="true"></span>
-          <div>
-            <strong>Póliza emitida</strong>
-            @if (poliza.emitida_en) {
-              <time [attr.datetime]="poliza.emitida_en">{{
-                poliza.emitida_en | date: 'dd/MM/yyyy' : 'UTC'
-              }}</time>
-            }
-          </div>
-        </div>
+        @if (poliza.historial.length === 0) {
+          <p class="polizas__text">Todavía no hay eventos disponibles.</p>
+        } @else {
+          @for (evento of poliza.historial; track $index) {
+            <div class="polizas__event">
+              <span class="polizas__event-dot" aria-hidden="true"></span>
+              <div>
+                <strong>{{ etiquetaHistorial(evento.tipo) }}</strong>
+                <span>{{ evento.resultado }}</span>
+                <time [attr.datetime]="evento.ocurrido_en">{{
+                  evento.ocurrido_en | date: 'dd/MM/yyyy HH:mm' : 'UTC'
+                }}</time>
+              </div>
+            </div>
+          }
+        }
       </section>
       <aside class="polizas__callout">
         <strong>Cómo pedir un cambio</strong>

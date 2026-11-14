@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { PolizaService } from '../../../../core/services/poliza.service';
 import { PolizasComponent } from './polizas.component';
@@ -53,11 +53,22 @@ describe('PolizasComponent', () => {
                       prima: '12000.50',
                     },
                   ],
+                  historial: [
+                    {
+                      tipo: 'POLIZA_EMITIDA',
+                      ocurrido_en: '2026-01-01T00:00:00Z',
+                      resultado: 'EMITIDA',
+                    },
+                  ],
                 },
               ]),
           },
         },
         provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { paramMap: { get: () => 'poliza-1' } } },
+        },
         { provide: AuthService, useValue: { email: 'cliente@example.com' } },
       ],
     }).compileComponents();
@@ -68,6 +79,8 @@ describe('PolizasComponent', () => {
     const el = fixture.nativeElement as HTMLElement;
     expect(el.textContent).toContain('POL-0001');
     expect(el.textContent).toContain('EMITIDA');
-    expect(el.textContent).toContain('Vence 01/01/2027');
+    expect(el.textContent).toContain('01/01/2027');
+    expect(el.textContent).toContain('Póliza emitida');
+    expect(el.textContent).toContain('EMITIDA');
   });
 });

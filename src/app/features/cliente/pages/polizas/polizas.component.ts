@@ -25,6 +25,13 @@ export class PolizasComponent implements OnInit {
   readonly error = signal<string | null>(null);
   readonly polizas = signal<Poliza[]>([]);
   readonly seleccionada = signal<Poliza | null>(null);
+  private readonly etiquetasHistorial: Record<string, string> = {
+    FIRMA_CAPTURADA: 'Firma capturada',
+    VALIDACION_FIRMA: 'Firma validada',
+    VALIDACION_PAGO: 'Pago validado',
+    FIRMA_VINCULADA: 'Firma vinculada',
+    POLIZA_EMITIDA: 'Póliza emitida',
+  };
 
   async ngOnInit(): Promise<void> {
     try {
@@ -58,6 +65,10 @@ export class PolizasComponent implements OnInit {
 
   deducible(poliza: Poliza): string {
     return this.formatearNumero(Number(poliza.coberturas[0]?.deducible ?? 0));
+  }
+
+  etiquetaHistorial(tipo: string): string {
+    return this.etiquetasHistorial[tipo] ?? tipo;
   }
 
   private formatearNumero(valor: number): string {
