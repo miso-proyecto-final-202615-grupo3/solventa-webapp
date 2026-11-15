@@ -1,6 +1,6 @@
 @if (cotizacion(); as c) {
   <section class="adq adq--form">
-    <app-pasos-compra [actual]="2" />
+    <app-pasos-compra [actual]="3" />
 
     <div>
       <p class="kicker">{{ c.producto_codigo }}</p>
@@ -47,11 +47,19 @@
         @if (particulares().length > 0) {
           <article class="adq__documento" aria-labelledby="cond-particulares">
             <h2 id="cond-particulares" class="adq__subtitle">Condiciones particulares</h2>
-            <dl class="adq__particulares" data-testid="condiciones-particulares">
+            <dl class="adq__detalles" data-testid="condiciones-particulares">
               @for (p of particulares(); track $index) {
-                <div class="adq__particular">
+                <div>
                   <dt>{{ p.etiqueta }}</dt>
-                  <dd>{{ p.valor }}</dd>
+                  <dd [class.adq__vigencia]="p.vigencia">
+                    @if (p.campos; as campos) {
+                      @for (campo of campos; track $index) {
+                        <span class="adq__campo">{{ campo.etiqueta }}: {{ campo.valor }}</span>
+                      }
+                    } @else {
+                      {{ p.valor }}
+                    }
+                  </dd>
                 </div>
               }
             </dl>

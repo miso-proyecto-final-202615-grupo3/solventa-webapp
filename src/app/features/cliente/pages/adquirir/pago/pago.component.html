@@ -1,0 +1,197 @@
+@if (cotizacion(); as c) {
+  <section class="adq adq--form" [attr.inert]="ocupado() ? '' : null">
+    <app-pasos-compra [actual]="6" />
+    <div>
+      <p class="kicker">{{ c.producto_codigo }}</p>
+      <h1 class="adq__title">Paga y emitimos tu póliza</h1>
+    </div>
+    @if (cargando()) {
+      <p role="status">Cargando resumen de pago…</p>
+    }
+    @if (error(); as msg) {
+      <div class="callout callout--alert" role="alert">{{ msg }}</div>
+    }
+    @if (aprobado()) {
+      <div class="callout callout--ok" role="status">Pago aprobado.</div>
+      <div class="adq__acciones">
+        <button
+          type="button"
+          class="btn btn--primary btn--lg"
+          [routerLink]="['/cliente/adquirir', c.producto_codigo, 'confirmacion']"
+        >
+          Siguiente paso
+        </button>
+      </div>
+    } @else if (resumen(); as r) {
+      <form class="adq__form" [formGroup]="form" (ngSubmit)="pagar()" novalidate>
+        <fieldset
+          class="pago__campos"
+          [disabled]="
+            ocupado() ||
+            incierto() ||
+            pago()?.estado === 'APROBADO' ||
+            pago()?.estado === 'PENDIENTE'
+          "
+        >
+          <div class="pago__medios">
+            <span class="pago__label" id="medio-pago">Medio de pago</span>
+            <div class="pago__opciones" role="radiogroup" aria-labelledby="medio-pago">
+              @for (metodo of r.metodos_pago; track metodo.codigo) {
+                <label class="pago__opcion">
+                  <input
+                    type="radio"
+                    formControlName="metodo"
+                    [value]="metodo.codigo"
+                    (change)="cambiarMetodo()"
+                  />
+                  <span>
+                    <strong>{{
+                      metodo.codigo === 'PAYPAL' ? 'PayPal' : 'Tarjeta de crédito'
+                    }}</strong>
+                    <small>{{
+                      metodo.codigo === 'PAYPAL'
+                        ? 'Paga con tu cuenta de PayPal.'
+                        : 'Paga con tu tarjeta de crédito.'
+                    }}</small>
+                  </span>
+                </label>
+              }
+            </div>
+          </div>
+          @if (form.controls.metodo.value === 'PAYPAL') {
+            <div class="field">
+              <label for="paypal-email">Correo de PayPal</label>
+              <input
+                id="paypal-email"
+                class="input"
+                type="email"
+                autocomplete="email"
+                formControlName="email"
+                placeholder="nombre@ejemplo.com"
+                [attr.aria-invalid]="
+                  form.controls.email.touched && form.controls.email.invalid ? true : null
+                "
+              />
+              @if (form.controls.email.touched && form.controls.email.invalid) {
+                <p class="field__error">Ingresa un correo válido.</p>
+              }
+            </div>
+          } @else {
+            <div class="pago__tarjeta">
+              <div class="field">
+                <label for="numero-tarjeta">Número de tarjeta</label>
+                <input
+                  id="numero-tarjeta"
+                  class="input input--mono"
+                  type="text"
+                  inputmode="numeric"
+                  autocomplete="cc-number"
+                  formControlName="numero"
+                  appFormatoTarjeta="numero"
+                  maxlength="23"
+                  placeholder="0000 0000 0000 0000"
+                  [attr.aria-invalid]="
+                    form.controls.numero.touched && form.controls.numero.invalid ? true : null
+                  "
+                />
+                @if (form.controls.numero.touched && form.controls.numero.invalid) {
+                  <p class="field__error">Ingresa entre 13 y 19 dígitos.</p>
+                }
+              </div>
+              <div class="field">
+                <label for="vencimiento">Vence</label>
+                <input
+                  id="vencimiento"
+                  class="input input--mono"
+                  type="text"
+                  inputmode="numeric"
+                  autocomplete="cc-exp"
+                  formControlName="vencimiento"
+                  appFormatoTarjeta="vencimiento"
+                  maxlength="5"
+                  placeholder="MM/AA"
+                  [attr.aria-invalid]="
+                    form.controls.vencimiento.touched && form.controls.vencimiento.invalid
+                      ? true
+                      : null
+                  "
+                />
+                @if (form.controls.vencimiento.touched && form.controls.vencimiento.invalid) {
+                  <p class="field__error">Ingresa una fecha válida (MM/AA).</p>
+                }
+              </div>
+              <div class="field">
+                <label for="cvv">CVV</label>
+                <input
+                  id="cvv"
+                  class="input input--mono"
+                  type="password"
+                  inputmode="numeric"
+                  autocomplete="cc-csc"
+                  formControlName="cvv"
+                  appFormatoTarjeta="cvv"
+                  maxlength="3"
+                  [attr.aria-invalid]="
+                    form.controls.cvv.touched && form.controls.cvv.invalid ? true : null
+                  "
+                />
+                @if (form.controls.cvv.touched && form.controls.cvv.invalid) {
+                  <p class="field__error">Ingresa 3 dígitos.</p>
+                }
+              </div>
+            </div>
+          }
+        </fieldset>
+        <div class="pago__total">
+          <label for="valor-pago">Total a pagar hoy</label>
+          <input id="valor-pago" [value]="monto(r)" readonly />
+        </div>
+        <div class="adq__acciones">
+          <button
+            type="submit"
+            class="btn btn--primary btn--lg"
+            [disabled]="
+              ocupado() ||
+              incierto() ||
+              pago()?.estado === 'APROBADO' ||
+              pago()?.estado === 'PENDIENTE'
+            "
+          >
+            Pagar
+          </button>
+          @if (!aprobado() && (pago()?.estado === 'PENDIENTE' || pago()?.estado === 'APROBADO')) {
+            <button type="button" class="btn btn--secondary" (click)="consultar()">
+              Consultar pago
+            </button>
+          }
+          @if (puedeReenviar()) {
+            <button type="button" class="btn btn--secondary" (click)="enviarIntento()">
+              Reintentar envío
+            </button>
+          }
+          <button
+            type="button"
+            class="btn btn--primary btn--lg"
+            [disabled]="!aprobado()"
+            [routerLink]="['/cliente/adquirir', c.producto_codigo, 'confirmacion']"
+          >
+            Siguiente paso
+          </button>
+          <a
+            class="btn btn--secondary btn--lg"
+            [routerLink]="['/cliente/adquirir', c.producto_codigo, 'firma']"
+            >Volver</a
+          >
+        </div>
+      </form>
+    } @else if (!cargando()) {
+      <button type="button" class="btn btn--secondary" (click)="cargar()">Reintentar</button>
+    }
+  </section>
+  @if (ocupado()) {
+    <app-espera
+      titulo="Pago en curso"
+      mensaje="Estamos consultando el estado de tu pago. No cierres esta página."
+    />
+  }
+}

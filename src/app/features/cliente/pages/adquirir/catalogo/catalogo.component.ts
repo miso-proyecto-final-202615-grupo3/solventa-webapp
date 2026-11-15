@@ -3,9 +3,10 @@ import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { Producto } from '../../../../../core/models/cotizacion';
 import { CotizacionService } from '../../../../../core/services/cotizacion.service';
+import { PasosCompraComponent } from '../../../../../shared/pasos-compra/pasos-compra.component';
 
 @Component({
-  imports: [RouterLink],
+  imports: [RouterLink, PasosCompraComponent],
   selector: 'app-catalogo',
   styleUrl: '../adquirir.scss',
   templateUrl: './catalogo.component.html',

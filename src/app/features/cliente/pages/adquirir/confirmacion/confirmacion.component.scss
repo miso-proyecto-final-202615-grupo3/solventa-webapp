@@ -1,0 +1,26 @@
+.confirmacion__badge {
+  display: inline-block;
+  padding: 4px 8px;
+  background: var(--status-active-bg, #dcefe2);
+  color: var(--status-active-ink, #1f6339);
+  font-family: var(--font-mono, monospace);
+  font-size: var(--size-mono-sm, 12px);
+  font-weight: var(--weight-semibold, 600);
+  text-transform: uppercase;
+}
+
+.confirmacion__titulo {
+  margin-top: var(--space-5, 12px);
+}
+
+.confirmacion__estados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3, 8px) var(--space-8, 20px);
+  color: var(--ink-72, rgb(16 27 45 / 72%));
+  font-size: var(--size-caption, 12px);
+}
+
+.confirmacion__estados p {
+  margin: 0;
+}

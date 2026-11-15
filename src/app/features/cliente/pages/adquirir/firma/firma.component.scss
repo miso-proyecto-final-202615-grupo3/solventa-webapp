@@ -1,0 +1,9 @@
+.firma__canvas {
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--slv-cobalto, #1b3a6b);
+  background: #fff;
+  touch-action: none;
+  cursor: crosshair;
+}
