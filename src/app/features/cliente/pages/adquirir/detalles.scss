@@ -1,0 +1,28 @@
+.adq__detalles {
+  display: grid;
+  gap: var(--space-4, 10px);
+  margin: 0;
+  font-size: var(--size-body-sm, 15px);
+}
+
+.adq__detalles > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-5, 12px);
+  padding-bottom: var(--space-4, 10px);
+  border-bottom: 1px solid rgb(16 27 45 / 8%);
+}
+
+.adq__detalles dt {
+  min-width: 0;
+  color: var(--ink-62, rgb(16 27 45 / 62%));
+  overflow-wrap: anywhere;
+}
+
+.adq__detalles dd {
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-mono, monospace);
+  text-align: right;
+  overflow-wrap: anywhere;
+}

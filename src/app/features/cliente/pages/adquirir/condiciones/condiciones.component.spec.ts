@@ -72,6 +72,47 @@ describe('CondicionesComponent', () => {
     expect(siguiente(el).disabled).toBe(false);
   });
 
+  it('presenta cada cobertura en una fila con sus campos y conserva las demás condiciones', async () => {
+    const { el } = await cargar({
+      ...CONDICIONES,
+      condiciones_particulares: {
+        plazo_meses: 12,
+        vigencia_desde: '2026-01-01T14:30:00Z',
+        vigencia_hasta: '2027-01-01T12:00:00Z',
+        coberturas: [
+          {
+            nombre: 'Hospitalización',
+            prima: '50000',
+            limite_asegurado: '1000000',
+            deducible: '10000',
+          },
+          { nombre: 'Equipaje', prima: '9000', deducible: '500' },
+        ],
+        destino: 'Europa',
+      },
+    });
+    const detalles = el.querySelector('[data-testid="condiciones-particulares"]')!;
+    const filas = detalles.querySelectorAll(':scope > div');
+    expect(detalles.classList.contains('adq__detalles')).toBe(true);
+    expect(filas).toHaveLength(5);
+    expect(filas[1].querySelector('dt')?.textContent).toBe('Vigencia');
+    expect(filas[1].querySelector('dd')?.textContent?.trim()).toBe('01/01/2026 – 01/01/2027');
+    expect(filas[1].querySelector('dd')?.classList.contains('adq__vigencia')).toBe(true);
+    expect(filas[2].querySelector('dt')?.textContent).toBe('Hospitalización');
+    const campos = Array.from(filas[2].querySelectorAll('dd .adq__campo'));
+    expect(campos).toHaveLength(3);
+    expect(campos.map((campo) => campo.textContent?.split(':')[0])).toEqual([
+      'Prima',
+      'Límite asegurado',
+      'Deducible',
+    ]);
+    expect(filas[2].querySelector('dd')?.textContent).not.toContain('Nombre:');
+    expect(filas[3].querySelector('dt')?.textContent).toBe('Equipaje');
+    expect(filas[3].querySelectorAll('dd .adq__campo')).toHaveLength(3);
+    expect(filas[3].querySelector('dd')?.textContent).toContain('Deducible:');
+    expect(filas[4].textContent).toContain('Europa');
+  });
+
   it('registra la aceptación y avanza a la verificación de identidad', async () => {
     const { fixture, http, nav, el } = await cargar();
     el.querySelector<HTMLInputElement>('#aceptar-condiciones')!.click();

@@ -1,10 +1,6 @@
 # Solventa · webapp
 
-Implementación Angular del prototipo navegable de Solventa (canal web: portal
-cliente y back-office del operador).
-
-Referencia de diseño: `../githubPagesProjectFinal` (prototipo HTML/CSS/JS,
-sistema de diseño en `_ds/`, datos de ejemplo en `datos.js`).
+Implementación Angular del prototipo navegable de Solventa (canal web: portal cliente y back-office del operador).
 
 ## Stack
 

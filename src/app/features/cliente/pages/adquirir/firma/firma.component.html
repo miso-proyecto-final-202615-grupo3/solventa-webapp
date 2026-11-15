@@ -1,0 +1,64 @@
+@if (cotizacion(); as c) {
+  <section class="adq adq--form">
+    <app-pasos-compra [actual]="5" />
+    <div>
+      <p class="kicker">{{ c.producto_codigo }}</p>
+      <h1 class="adq__title">Firma digital</h1>
+    </div>
+    <p class="adq__text">Dibuja tu firma manuscrita para continuar con la emisión de tu póliza.</p>
+    @if (cargando()) {
+      <p role="status">Consultando tu firma…</p>
+    }
+    @if (error(); as msg) {
+      <div class="callout callout--alert" role="alert">{{ msg }}</div>
+    }
+    @if (validada()) {
+      <div class="callout callout--ok" role="status">Tu firma fue capturada y confirmada.</div>
+    } @else if (!cargando()) {
+      <canvas
+        #canvas
+        width="600"
+        height="220"
+        class="firma__canvas"
+        aria-label="Área para dibujar tu firma"
+        (pointerdown)="comenzar($event)"
+        (pointermove)="mover($event)"
+        (pointerup)="terminar()"
+        (pointercancel)="terminar()"
+      ></canvas>
+      <div class="adq__acciones">
+        <button
+          type="button"
+          class="btn btn--secondary"
+          [disabled]="enviando()"
+          (click)="limpiar()"
+        >
+          Limpiar firma
+        </button>
+        <button
+          type="button"
+          class="btn btn--primary"
+          [disabled]="!tieneFirma() || enviando()"
+          (click)="enviar()"
+        >
+          {{ enviando() ? 'Confirmando…' : 'Enviar firma' }}
+        </button>
+      </div>
+    }
+    <div class="adq__acciones">
+      <a
+        class="btn btn--secondary btn--lg"
+        [routerLink]="['/cliente/adquirir', c.producto_codigo, 'identidad']"
+        >Volver</a
+      >
+      <button
+        type="button"
+        class="btn btn--primary btn--lg"
+        [disabled]="!validada()"
+        [routerLink]="['/cliente/adquirir', c.producto_codigo, 'pago']"
+      >
+        Siguiente paso
+      </button>
+    </div>
+  </section>
+}

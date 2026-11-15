@@ -13,13 +13,13 @@ import { firstValueFrom } from 'rxjs';
 import { Condiciones, DecisionCondiciones } from '../../../../../core/models/condiciones';
 import { CondicionesService } from '../../../../../core/services/condiciones.service';
 import { CotizacionService } from '../../../../../core/services/cotizacion.service';
-import { aplanarParticulares, bloquesTexto } from '../../../../../core/utils/condiciones';
+import { agruparParticulares, bloquesTexto } from '../../../../../core/utils/condiciones';
 import { PasosCompraComponent } from '../../../../../shared/pasos-compra/pasos-compra.component';
 
 @Component({
   imports: [DatePipe, RouterLink, PasosCompraComponent],
   selector: 'app-condiciones',
-  styleUrls: ['../adquirir.scss', './condiciones.component.scss'],
+  styleUrls: ['../adquirir.scss', '../detalles.scss', './condiciones.component.scss'],
   templateUrl: './condiciones.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -38,7 +38,7 @@ export class CondicionesComponent implements OnInit {
     bloquesTexto(this.condiciones()?.condiciones_generales ?? ''),
   );
   protected readonly particulares = computed(() =>
-    aplanarParticulares(
+    agruparParticulares(
       this.condiciones()?.condiciones_particulares ?? {},
       '',
       this.cotizacion()?.moneda ?? 'COP',

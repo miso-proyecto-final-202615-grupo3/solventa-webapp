@@ -81,12 +81,30 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'adquirir/:codigo/firma',
+        title: 'Firma digital · Solventa',
+        data: { kicker: 'adquirir', titulo: 'Firma' },
+        loadComponent: () =>
+          import('./features/cliente/pages/adquirir/firma/firma.component').then(
+            (m) => m.FirmaComponent,
+          ),
+      },
+      {
         path: 'adquirir/:codigo/pago',
         title: 'Pago · Solventa',
         data: { kicker: 'adquirir', titulo: 'Pago' },
         loadComponent: () =>
           import('./features/cliente/pages/adquirir/pago/pago.component').then(
             (m) => m.PagoComponent,
+          ),
+      },
+      {
+        path: 'adquirir/:codigo/confirmacion',
+        title: 'Póliza emitida · Solventa',
+        data: { kicker: 'adquirir', titulo: 'Confirmación' },
+        loadComponent: () =>
+          import('./features/cliente/pages/adquirir/confirmacion/confirmacion.component').then(
+            (m) => m.ConfirmacionComponent,
           ),
       },
       {

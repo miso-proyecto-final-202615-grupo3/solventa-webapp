@@ -57,7 +57,7 @@ describe('IdentidadComponent', () => {
     expect(q(el, 'ya-verificado')?.textContent).toContain('ya fue verificada');
     expect(el.querySelector('input[type="file"]')).toBeNull();
     q(el, 'siguiente')!.click();
-    expect(nav).toHaveBeenCalledWith(['/cliente/adquirir', 'VIAJE', 'pago']);
+    expect(nav).toHaveBeenCalledWith(['/cliente/adquirir', 'VIAJE', 'firma']);
   });
 
   it('sin KYC pide las dos fotos y habilita el botón al tenerlas', async () => {
@@ -126,7 +126,7 @@ describe('IdentidadComponent', () => {
 
     expect(q(ctx.el, 'resultado-aprobado')).not.toBeNull();
     q(ctx.el, 'siguiente')!.click();
-    expect(ctx.nav).toHaveBeenCalledWith(['/cliente/adquirir', 'VIAJE', 'pago']);
+    expect(ctx.nav).toHaveBeenCalledWith(['/cliente/adquirir', 'VIAJE', 'firma']);
   });
 
   it('muestra el rechazo sin permitir continuar y deja reintentar', async () => {

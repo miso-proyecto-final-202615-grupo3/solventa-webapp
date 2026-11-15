@@ -170,7 +170,7 @@ export class IdentidadComponent implements OnInit, OnDestroy {
   protected async siguiente(): Promise<void> {
     const cotizacion = this.cotizacion();
     if (!cotizacion) return;
-    await this.router.navigate(['/cliente/adquirir', cotizacion.producto_codigo, 'pago']);
+    await this.router.navigate(['/cliente/adquirir', cotizacion.producto_codigo, 'firma']);
   }
 
   private async esperarResultado(): Promise<void> {

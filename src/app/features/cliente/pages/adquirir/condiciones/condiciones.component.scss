@@ -40,26 +40,16 @@
   padding-left: var(--space-8, 20px);
 }
 
-.adq__particulares {
-  display: grid;
-  margin: 0;
-  font-size: var(--size-ui, 14px);
+.adq__campo {
+  display: block;
 }
 
-.adq__particular {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
-  gap: var(--space-5, 12px);
-  padding: var(--space-4, 10px) var(--space-5, 12px);
-  border-bottom: 1px solid var(--slv-paper-dim, #edf0ec);
-  overflow-wrap: anywhere;
+.adq__vigencia {
+  white-space: nowrap;
 }
 
-.adq__particular dt {
-  color: var(--text-muted, rgb(16 27 45 / 62%));
-}
-
-.adq__particular dd {
-  margin: 0;
-  font-weight: var(--weight-semibold, 600);
+@media (width <= 360px) {
+  .adq__vigencia {
+    font-size: 0.9em;
+  }
 }
