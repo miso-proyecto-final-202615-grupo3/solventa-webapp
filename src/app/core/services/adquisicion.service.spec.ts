@@ -32,17 +32,13 @@ describe('AdquisicionService', () => {
     post.flush({ estado: 'CAPTURADA' });
     await captura;
     const consulta = firstValueFrom(api.consultarFirma('q'));
-    http
-      .expectOne('/api/v1/bff-web/cotizaciones/q/firma-digital')
-      .flush({ estado: 'CAPTURADA' });
+    http.expectOne('/api/v1/bff-web/cotizaciones/q/firma-digital').flush({ estado: 'CAPTURADA' });
     expect((await consulta).estado).toBe('CAPTURADA');
   });
 
   it('usa la clave de idempotencia y las rutas de pago declaradas', async () => {
     const resumen = firstValueFrom(api.resumenPago('q'));
-    http
-      .expectOne('/api/v1/bff-web/cotizaciones/q/resumen-pago')
-      .flush({ prima_total: '100' });
+    http.expectOne('/api/v1/bff-web/cotizaciones/q/resumen-pago').flush({ prima_total: '100' });
     await resumen;
     const solicitud = {
       cotizacion_id: 'q',
