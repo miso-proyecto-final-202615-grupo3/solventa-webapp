@@ -57,6 +57,9 @@ describe('CotizacionComponent', () => {
       'Sin score crediticio',
     );
     expect(el.querySelector('a[href="/cliente/adquirir/VIAJE/cotizar"]')).not.toBeNull();
+    expect(el.querySelector('[data-testid="siguiente"]')?.getAttribute('href')).toBe(
+      '/cliente/adquirir/VIAJE/condiciones',
+    );
   });
 
   it('vuelve al catálogo si no hay cotización en memoria', async () => {

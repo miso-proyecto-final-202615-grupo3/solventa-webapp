@@ -27,6 +27,15 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'polizas/:polizaId',
+        title: 'Detalle de póliza · Solventa',
+        data: { kicker: 'cartera', titulo: 'Detalle de póliza' },
+        loadComponent: () =>
+          import('./features/cliente/pages/polizas/polizas.component').then(
+            (m) => m.PolizasComponent,
+          ),
+      },
+      {
         path: 'adquirir',
         title: 'Adquirir · Solventa',
         data: { kicker: 'adquirir', titulo: 'Catálogo' },
@@ -54,6 +63,51 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'adquirir/:codigo/condiciones',
+        title: 'Condiciones de la póliza · Solventa',
+        data: { kicker: 'adquirir', titulo: 'Condiciones' },
+        loadComponent: () =>
+          import('./features/cliente/pages/adquirir/condiciones/condiciones.component').then(
+            (m) => m.CondicionesComponent,
+          ),
+      },
+      {
+        path: 'adquirir/:codigo/identidad',
+        title: 'Verificación de identidad · Solventa',
+        data: { kicker: 'adquirir', titulo: 'Identidad' },
+        loadComponent: () =>
+          import('./features/cliente/pages/adquirir/identidad/identidad.component').then(
+            (m) => m.IdentidadComponent,
+          ),
+      },
+      {
+        path: 'adquirir/:codigo/firma',
+        title: 'Firma digital · Solventa',
+        data: { kicker: 'adquirir', titulo: 'Firma' },
+        loadComponent: () =>
+          import('./features/cliente/pages/adquirir/firma/firma.component').then(
+            (m) => m.FirmaComponent,
+          ),
+      },
+      {
+        path: 'adquirir/:codigo/pago',
+        title: 'Pago · Solventa',
+        data: { kicker: 'adquirir', titulo: 'Pago' },
+        loadComponent: () =>
+          import('./features/cliente/pages/adquirir/pago/pago.component').then(
+            (m) => m.PagoComponent,
+          ),
+      },
+      {
+        path: 'adquirir/:codigo/confirmacion',
+        title: 'Póliza emitida · Solventa',
+        data: { kicker: 'adquirir', titulo: 'Confirmación' },
+        loadComponent: () =>
+          import('./features/cliente/pages/adquirir/confirmacion/confirmacion.component').then(
+            (m) => m.ConfirmacionComponent,
+          ),
+      },
+      {
         path: 'perfil',
         title: 'Perfil · Solventa',
         data: { kicker: 'perfil', titulo: 'Tratamiento de datos' },
@@ -76,6 +130,15 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/onboarding/pages/terminos/terminos.component').then(
         (m) => m.TerminosComponent,
+      ),
+  },
+  {
+    path: 'operador/auditoria-emision',
+    title: 'Trazabilidad de emisión · Solventa',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/operador/pages/auditoria-emision/auditoria-emision.component').then(
+        (m) => m.AuditoriaEmisionComponent,
       ),
   },
   {

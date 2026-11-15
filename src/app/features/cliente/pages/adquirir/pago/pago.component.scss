@@ -1,0 +1,94 @@
+.pago__campos {
+  display: grid;
+  gap: var(--space-7, 16px);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.pago__medios,
+.pago__opciones {
+  display: grid;
+  gap: var(--space-3, 8px);
+}
+
+.pago__label {
+  color: var(--ink-72, rgb(16 27 45 / 72%));
+  font-size: var(--size-caption, 12px);
+  font-weight: var(--weight-semibold, 600);
+}
+
+.pago__opcion {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4, 10px);
+  padding: var(--space-5, 12px);
+  border: var(--border, 1px solid rgb(16 27 45 / 14%));
+  background: var(--surface-card, #fff);
+  cursor: pointer;
+  font-size: var(--size-body-sm, 15px);
+}
+
+.pago__opcion span {
+  display: grid;
+  gap: 2px;
+}
+
+.pago__opcion small {
+  color: var(--ink-62, rgb(16 27 45 / 62%));
+  font-size: var(--size-caption, 12px);
+}
+
+.pago__tarjeta {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-6, 14px);
+}
+
+.pago__tarjeta .field {
+  min-width: 0;
+  align-content: start;
+}
+
+.pago__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4, 10px);
+  padding: var(--space-7, 16px);
+  border: var(--border, 1px solid rgb(16 27 45 / 14%));
+  background: var(--surface-sunken, #edf0ec);
+}
+
+.pago__total label {
+  color: var(--ink-72, rgb(16 27 45 / 72%));
+  font-size: var(--size-body-sm, 15px);
+}
+
+.pago__total input {
+  min-width: 0;
+  width: 55%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--slv-ink, #101b2d);
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: 24px;
+  font-weight: var(--weight-semibold, 600);
+  text-align: right;
+}
+
+@media (width <= 520px) {
+  .pago__tarjeta {
+    gap: var(--space-2, 6px);
+  }
+
+  .pago__tarjeta .input {
+    padding-inline: var(--space-2, 6px);
+  }
+
+  .pago__total input {
+    font-size: 19px;
+  }
+}

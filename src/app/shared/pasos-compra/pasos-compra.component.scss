@@ -1,6 +1,7 @@
 .pasos {
   display: flex;
-  gap: var(--space-6, 14px);
+  flex-wrap: wrap;
+  gap: var(--space-3, 8px) var(--space-6, 14px);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -10,7 +11,7 @@
 
 .pasos__item {
   display: flex;
-  flex: 1;
+  flex: 1 1 auto;
   align-items: center;
   gap: var(--space-3, 8px);
   padding-bottom: var(--space-3, 8px);

@@ -77,3 +77,33 @@ export interface Cotizacion {
   expira_en: string;
   creada_en: string | null;
 }
+
+export interface PolizaCobertura {
+  cobertura_id: string;
+  limite_asegurado: string;
+  deducible: string;
+  prima: string;
+}
+
+export interface HistorialPoliza {
+  tipo: string;
+  ocurrido_en: string;
+  resultado: string;
+}
+
+export interface Poliza {
+  poliza_id: string;
+  cliente_id: string;
+  cotizacion_id: string;
+  producto_id: string;
+  numero: string;
+  estado: string;
+  vigencia_desde: string;
+  vigencia_hasta: string;
+  emitida_en: string | null;
+  ramo: string;
+  prima_total: string;
+  coberturas: PolizaCobertura[];
+  historial: HistorialPoliza[];
+  documento_url?: string | null;
+}

@@ -1,0 +1,70 @@
+@if (cotizacion()) {
+  <section class="adq adq--form" [attr.inert]="ocupado() ? '' : null">
+    <app-pasos-compra [actual]="7" />
+    <div>
+      @if (lista()) {
+        <span class="confirmacion__badge">Póliza emitida</span>
+      }
+      <h1 class="adq__title confirmacion__titulo">
+        {{ lista() ? 'Tu póliza ya fue emitida' : 'Confirmación de póliza' }}
+      </h1>
+    </div>
+    <div class="confirmacion__estados" aria-live="polite">
+      <p>
+        Estado de emisión: <strong>{{ estadoEmision() }}</strong>
+      </p>
+      <p>
+        Certificado PDF: <strong>{{ estadoCertificado() }}</strong>
+      </p>
+    </div>
+    @if (error(); as msg) {
+      <div class="callout callout--alert" role="alert">{{ msg }}</div>
+    }
+    @if (lista()) {
+      @if (poliza(); as p) {
+        <dl class="adq__detalles confirmacion__detalles">
+          <div>
+            <dt>Póliza</dt>
+            <dd>{{ p.numero }}</dd>
+          </div>
+          <div>
+            <dt>Titular</dt>
+            <dd>{{ p.titular_nombre }}</dd>
+          </div>
+          <div>
+            <dt>Vigencia</dt>
+            <dd>
+              {{ p.vigencia_desde.split('T')[0] | date: 'dd/MM/yyyy' }} –
+              {{ p.vigencia_hasta.split('T')[0] | date: 'dd/MM/yyyy' }}
+            </dd>
+          </div>
+          <div>
+            <dt>Prima mensual</dt>
+            <dd>{{ monto(p) }}</dd>
+          </div>
+        </dl>
+        <div class="adq__acciones">
+          <button
+            type="button"
+            class="btn btn--primary btn--lg"
+            [disabled]="descargando()"
+            (click)="descargar()"
+          >
+            {{ descargando() ? 'Descargando…' : 'Descargar certificado PDF' }}
+          </button>
+          <a class="btn btn--secondary btn--lg" routerLink="/cliente/polizas">Ver mis pólizas</a>
+        </div>
+      }
+    } @else if (!ocupado()) {
+      <button type="button" class="btn btn--secondary" (click)="consultar()">
+        Consultar de nuevo
+      </button>
+    }
+  </section>
+  @if (ocupado()) {
+    <app-espera
+      titulo="Emisión en curso"
+      [mensaje]="'Emisión: ' + estadoEmision() + ' · Certificado PDF: ' + estadoCertificado()"
+    />
+  }
+}
