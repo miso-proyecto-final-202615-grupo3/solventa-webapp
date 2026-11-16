@@ -1,4 +1,5 @@
 import { routes } from './app.routes';
+import { sociosAdminGuard } from './core/auth/auth.guard';
 
 describe('routes', () => {
   it('registro y terminos son alcanzables: van antes del comodín', () => {
@@ -22,5 +23,10 @@ describe('routes', () => {
 
     expect(route?.loadComponent).toBeDefined();
     expect(await (route?.loadComponent as () => Promise<unknown>)()).toBeTruthy();
+  });
+
+  it('protege el registro de socios con el grupo SociosAdmin', () => {
+    const route = routes.find((r) => r.path === 'operador/socios/nuevo');
+    expect(route?.canActivate).toEqual([sociosAdminGuard]);
   });
 });

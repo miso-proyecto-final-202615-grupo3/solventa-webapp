@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/auth/auth.guard';
+import { authGuard, sociosAdminGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -143,7 +143,7 @@ export const routes: Routes = [
   {
     path: 'operador/socios/nuevo',
     title: 'Registrar socio · Solventa',
-    canActivate: [authGuard],
+    canActivate: [sociosAdminGuard],
     loadComponent: () =>
       import('./features/operador/pages/socios/socios.component').then((m) => m.SociosComponent),
   },

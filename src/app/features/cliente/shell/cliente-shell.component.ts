@@ -46,6 +46,10 @@ export class ClienteShellComponent {
     return this.auth.email ?? '';
   }
 
+  protected get puedeGestionarSocios(): boolean {
+    return this.auth.hasGroup('SociosAdmin');
+  }
+
   protected async cerrarSesion(): Promise<void> {
     this.auth.logout();
     await this.router.navigateByUrl('/login');

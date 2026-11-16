@@ -38,6 +38,17 @@ describe('ClienteShellComponent', () => {
     expect(el.querySelector('.shell__pie')?.textContent).toContain('ana@correo.com');
   });
 
+  it('muestra gestión de socios para SociosAdmin', async () => {
+    await setup();
+    vi.spyOn(TestBed.inject(AuthService), 'hasGroup').mockReturnValue(true);
+    const fixture = TestBed.createComponent(ClienteShellComponent);
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelector('a[href="/operador/socios/nuevo"]')?.textContent,
+    ).toContain('Registrar socio');
+  });
+
   it('Cerrar sesión limpia la sesión y vuelve a /login', async () => {
     const { fixture, el } = await setup();
     const nav = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
