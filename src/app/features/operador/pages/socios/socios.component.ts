@@ -41,6 +41,8 @@ export class SociosComponent implements OnInit {
     this.cargandoSocios.set(true);
     try {
       this.socios.set(await firstValueFrom(this.servicio.listar()));
+    } catch {
+      this.error.set('No pudimos cargar los socios registrados. Intenta de nuevo.');
     } finally {
       this.cargandoSocios.set(false);
     }
