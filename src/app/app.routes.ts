@@ -9,6 +9,14 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
   },
   {
+    path: 'recuperar',
+    title: 'Recupera tu cuenta · Solventa',
+    loadComponent: () =>
+      import('./features/auth/recuperar/recuperar.component').then(
+        (m) => m.RecuperarClaveComponent,
+      ),
+  },
+  {
     path: 'cliente',
     canActivate: [authGuard],
     loadComponent: () =>

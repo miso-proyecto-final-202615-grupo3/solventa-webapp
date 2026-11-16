@@ -12,6 +12,7 @@ describe('routes', () => {
 
   it.each([
     'login',
+    'recuperar',
     'registro',
     'terminos',
     'operador/auditoria-consentimiento',
