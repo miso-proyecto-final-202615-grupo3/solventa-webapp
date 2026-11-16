@@ -2,6 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
+import { AuthService } from '../../../core/auth/auth.service';
 import { Login } from './login';
 
 describe('Login', () => {
@@ -72,6 +73,20 @@ describe('Login', () => {
       .flush({ access_token: 'tok', id_token: 'id', token_type: 'Bearer' });
     await fixture.whenStable();
     expect(nav).toHaveBeenCalledWith('/cliente/polizas');
+  });
+
+  it('lleva a SociosAdmin al backoffice de socios', async () => {
+    const { fixture, el, router, http } = await setup();
+    vi.spyOn(TestBed.inject(AuthService), 'hasGroup').mockReturnValue(true);
+    const nav = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+    fill(el, 'admin@correo.com', 'secreto');
+    submit(el);
+    http
+      .expectOne('/api/v1/bff-web/clientes/autenticar')
+      .flush({ access_token: 'tok', id_token: 'id', token_type: 'Bearer' });
+    await fixture.whenStable();
+
+    expect(nav).toHaveBeenCalledWith('/operador/socios/nuevo');
   });
 
   it('shows an error and stays on the page when credentials are wrong', async () => {

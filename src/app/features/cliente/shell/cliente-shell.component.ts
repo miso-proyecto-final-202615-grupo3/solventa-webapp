@@ -26,12 +26,18 @@ export class ClienteShellComponent {
   private readonly router = inject(Router);
 
   /** Secciones del portal cliente; las que no tienen ruta aún no existen en el producto. */
-  protected readonly menu: readonly ItemMenu[] = [
+  private readonly menuCliente: readonly ItemMenu[] = [
     { etiqueta: 'Mis pólizas', ruta: '/cliente/polizas' },
     { etiqueta: 'Siniestros', ruta: null },
     { etiqueta: 'Adquirir', ruta: '/cliente/adquirir' },
     { etiqueta: 'Perfil', ruta: '/cliente/perfil' },
   ];
+
+  protected get menu(): readonly ItemMenu[] {
+    return this.puedeGestionarSocios
+      ? [{ etiqueta: 'Registrar socio', ruta: '/operador/socios/nuevo' }]
+      : this.menuCliente;
+  }
 
   /** Kicker y título de la barra superior, tomados del `data` de la ruta activa. */
   protected readonly encabezado = toSignal(

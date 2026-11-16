@@ -5,7 +5,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { ClienteShellComponent } from './cliente-shell.component';
 
 describe('ClienteShellComponent', () => {
-  async function setup() {
+  async function setup(admin = false) {
     sessionStorage.clear();
     sessionStorage.setItem(
       'solventa.auth',
@@ -15,6 +15,7 @@ describe('ClienteShellComponent', () => {
       imports: [ClienteShellComponent],
       providers: [provideRouter([]), provideHttpClient()],
     }).compileComponents();
+    if (admin) vi.spyOn(TestBed.inject(AuthService), 'hasGroup').mockReturnValue(true);
     const fixture = TestBed.createComponent(ClienteShellComponent);
     fixture.detectChanges();
     return { fixture, el: fixture.nativeElement as HTMLElement };
@@ -39,14 +40,13 @@ describe('ClienteShellComponent', () => {
   });
 
   it('muestra gestión de socios para SociosAdmin', async () => {
-    await setup();
-    vi.spyOn(TestBed.inject(AuthService), 'hasGroup').mockReturnValue(true);
-    const fixture = TestBed.createComponent(ClienteShellComponent);
-    fixture.detectChanges();
+    const { el } = await setup(true);
 
-    expect(
-      fixture.nativeElement.querySelector('a[href="/operador/socios/nuevo"]')?.textContent,
-    ).toContain('Registrar socio');
+    expect(el.querySelector('a[href="/operador/socios/nuevo"]')?.textContent).toContain(
+      'Registrar socio',
+    );
+    expect(el.querySelector('a[href="/cliente/polizas"]')).toBeNull();
+    expect(el.querySelector('a[href="/cliente/perfil"]')).toBeNull();
   });
 
   it('Cerrar sesión limpia la sesión y vuelve a /login', async () => {
