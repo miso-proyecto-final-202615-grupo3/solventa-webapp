@@ -50,7 +50,7 @@ export class Login {
       await this.auth.login(this.form.getRawValue());
       await this.router.navigateByUrl(
         this.auth.hasGroup('SociosAdmin')
-          ? '/operador/socios/nuevo'
+          ? '/operador/socios'
           : this.auth.hasGroup('Socio')
             ? '/socio'
             : '/cliente/polizas',

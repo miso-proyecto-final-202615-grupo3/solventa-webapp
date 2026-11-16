@@ -1,8 +1,15 @@
 <main class="socios">
-  <nav class="socios__navigation" aria-label="Navegación de operación">
+  <aside class="socios__navigation" aria-label="Navegación de operación">
+    <p class="socios__navigation-title">Backoffice</p>
+    <a routerLink="/operador/socios" routerLinkActive="socios__navigation-link--activo"
+      >Socios registrados</a
+    >
+    <a routerLink="/operador/socios/nuevo" routerLinkActive="socios__navigation-link--activo"
+      >Registrar socio</a
+    >
     <a routerLink="/operador/auditoria-consentimiento">Auditoría de consentimientos</a>
     <a routerLink="/operador/auditoria-emision">Trazabilidad de emisión</a>
-  </nav>
+  </aside>
 
   <header class="socios__header">
     <p class="socios__eyebrow">Distribución <span>·</span> Backoffice</p>
