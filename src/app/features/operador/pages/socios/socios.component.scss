@@ -39,6 +39,7 @@
 }
 
 .socios__header {
+  grid-column: 2;
   max-width: 700px;
   margin-bottom: var(--space-10);
 }
@@ -69,6 +70,7 @@
 }
 
 .socios__layout {
+  grid-column: 2;
   display: grid;
   grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.6fr);
   align-items: start;
@@ -293,6 +295,11 @@
   .socios {
     grid-template-columns: 1fr;
     gap: var(--space-7);
+  }
+
+  .socios__header,
+  .socios__layout {
+    grid-column: 1;
   }
 
   .socios__navigation {
