@@ -141,6 +141,35 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'operador',
+    canActivate: [sociosAdminGuard],
+    loadComponent: () =>
+      import('./features/cliente/shell/cliente-shell.component').then(
+        (m) => m.ClienteShellComponent,
+      ),
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'socios' },
+      {
+        path: 'socios',
+        title: 'Socios registrados · Solventa',
+        data: { kicker: 'backoffice', titulo: 'Socios registrados' },
+        loadComponent: () =>
+          import('./features/operador/pages/socios/socios-listado.component').then(
+            (m) => m.SociosListadoComponent,
+          ),
+      },
+      {
+        path: 'socios/nuevo',
+        title: 'Registrar socio · Solventa',
+        data: { kicker: 'backoffice', titulo: 'Registrar socio' },
+        loadComponent: () =>
+          import('./features/operador/pages/socios/socios.component').then(
+            (m) => m.SociosComponent,
+          ),
+      },
+    ],
+  },
+  {
     path: 'operador/socios',
     title: 'Socios registrados · Solventa',
     canActivate: [sociosAdminGuard],

@@ -35,7 +35,10 @@ export class ClienteShellComponent {
 
   protected get menu(): readonly ItemMenu[] {
     return this.puedeGestionarSocios
-      ? [{ etiqueta: 'Registrar socio', ruta: '/operador/socios/nuevo' }]
+      ? [
+          { etiqueta: 'Socios registrados', ruta: '/operador/socios' },
+          { etiqueta: 'Registrar socio', ruta: '/operador/socios/nuevo' },
+        ]
       : this.menuCliente;
   }
 
