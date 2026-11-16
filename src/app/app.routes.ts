@@ -148,6 +148,12 @@ export const routes: Routes = [
       import('./features/operador/pages/socios/socios.component').then((m) => m.SociosComponent),
   },
   {
+    path: 'socio',
+    title: 'Portal del socio · Solventa',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/socio/socio.component').then((m) => m.SocioComponent),
+  },
+  {
     path: 'operador/auditoria-emision',
     title: 'Trazabilidad de emisión · Solventa',
     canActivate: [authGuard],

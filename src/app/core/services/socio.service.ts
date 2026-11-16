@@ -16,4 +16,10 @@ export class SocioService {
     if (this.auth.token) headers = headers.set('Authorization', `Bearer ${this.auth.token}`);
     return this.http.post<SocioRegistrado>(this.url, payload, { headers });
   }
+
+  listar(): Observable<SocioRegistrado[]> {
+    let headers = new HttpHeaders();
+    if (this.auth.token) headers = headers.set('Authorization', `Bearer ${this.auth.token}`);
+    return this.http.get<SocioRegistrado[]>(this.url, { headers });
+  }
 }

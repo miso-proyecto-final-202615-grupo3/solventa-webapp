@@ -49,7 +49,11 @@ export class Login {
     try {
       await this.auth.login(this.form.getRawValue());
       await this.router.navigateByUrl(
-        this.auth.hasGroup('SociosAdmin') ? '/operador/socios/nuevo' : '/cliente/polizas',
+        this.auth.hasGroup('SociosAdmin')
+          ? '/operador/socios/nuevo'
+          : this.auth.hasGroup('Socio')
+            ? '/socio'
+            : '/cliente/polizas',
       );
     } catch (e) {
       this.formError.set(

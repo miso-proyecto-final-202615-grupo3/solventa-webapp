@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -12,7 +12,7 @@ import { SocioRegistrado } from '../../../../core/models/socio';
   styleUrl: './socios.component.scss',
   templateUrl: './socios.component.html',
 })
-export class SociosComponent {
+export class SociosComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly servicio = inject(SocioService);
 
@@ -20,15 +20,31 @@ export class SociosComponent {
   readonly intentoEnvio = signal(false);
   readonly error = signal<string | null>(null);
   readonly socioRegistrado = signal<SocioRegistrado | null>(null);
+  readonly socios = signal<SocioRegistrado[]>([]);
+  readonly cargandoSocios = signal(false);
 
   readonly form = this.fb.nonNullable.group({
     nombre: ['', [Validators.required, Validators.maxLength(120), Validators.pattern(/\S/)]],
+    correo: ['', [Validators.required, Validators.email]],
     tipo_socio: ['', [Validators.required, Validators.maxLength(60), Validators.pattern(/\S/)]],
     canal_integracion: [
       '',
       [Validators.required, Validators.maxLength(60), Validators.pattern(/\S/)],
     ],
   });
+
+  ngOnInit(): void {
+    this.cargarSocios();
+  }
+
+  private async cargarSocios(): Promise<void> {
+    this.cargandoSocios.set(true);
+    try {
+      this.socios.set(await firstValueFrom(this.servicio.listar()));
+    } finally {
+      this.cargandoSocios.set(false);
+    }
+  }
 
   async registrar(): Promise<void> {
     this.intentoEnvio.set(true);
@@ -40,7 +56,8 @@ export class SociosComponent {
     try {
       const payload = this.form.getRawValue();
       this.socioRegistrado.set(await firstValueFrom(this.servicio.registrar(payload)));
-      this.form.reset({ nombre: '', tipo_socio: '', canal_integracion: '' });
+      this.socios.update((socios) => [this.socioRegistrado()!, ...socios]);
+      this.form.reset({ nombre: '', correo: '', tipo_socio: '', canal_integracion: '' });
       this.intentoEnvio.set(false);
     } catch (err) {
       this.error.set(this.mensajeError(err));
