@@ -86,7 +86,7 @@ describe('Login', () => {
       .flush({ access_token: 'tok', id_token: 'id', token_type: 'Bearer' });
     await fixture.whenStable();
 
-    expect(nav).toHaveBeenCalledWith('/operador/socios/nuevo');
+    expect(nav).toHaveBeenCalledWith('/operador/socios');
   });
 
   it('shows an error and stays on the page when credentials are wrong', async () => {

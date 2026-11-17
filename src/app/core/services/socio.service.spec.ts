@@ -25,6 +25,7 @@ describe('SocioService', () => {
   it('envía los datos al BFF con el token de sesión', () => {
     const payload = {
       nombre: 'Banco Andino',
+      correo: 'contacto@bancoandino.com',
       tipo_socio: 'Banco',
       canal_integracion: 'API',
     };
@@ -36,7 +37,12 @@ describe('SocioService', () => {
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual(payload);
     expect(request.request.headers.get('Authorization')).toBe('Bearer token-socios-admin');
-    request.flush({ ...payload, id: 'socio-1', estado: 'PENDIENTE', creado_en: '2026-11-16T15:00:00Z' });
+    request.flush({
+      ...payload,
+      id: 'socio-1',
+      estado: 'PENDIENTE',
+      creado_en: '2026-11-16T15:00:00Z',
+    });
     expect(resultado).toMatchObject({ id: 'socio-1', estado: 'PENDIENTE' });
   });
 });
