@@ -48,7 +48,13 @@ export class Login {
     this.submitting.set(true);
     try {
       await this.auth.login(this.form.getRawValue());
-      await this.router.navigateByUrl('/cliente/polizas');
+      await this.router.navigateByUrl(
+        this.auth.hasGroup('SociosAdmin')
+          ? '/operador/socios'
+          : this.auth.hasGroup('Socio')
+            ? '/socio'
+            : '/cliente/polizas',
+      );
     } catch (e) {
       this.formError.set(
         e instanceof AuthError

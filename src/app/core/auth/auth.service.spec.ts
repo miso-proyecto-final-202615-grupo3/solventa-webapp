@@ -5,6 +5,7 @@ import { AuthError, AuthService } from './auth.service';
 
 const URL = '/api/v1/bff-web/clientes/autenticar';
 const CREDENCIALES = { email: 'ana@correo.com', password: 'Secreta123' };
+const TOKEN_SOCIOS_ADMIN = `header.${btoa(JSON.stringify({ 'cognito:groups': ['SociosAdmin'] }))}.signature`;
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -33,6 +34,16 @@ describe('AuthService', () => {
     expect(service.authenticated()).toBe(true);
     expect(service.token).toBe('tok');
     expect(service.email).toBe('ana@correo.com');
+  });
+
+  it('lee el grupo SociosAdmin del access token', async () => {
+    const promesa = service.login(CREDENCIALES);
+    httpMock
+      .expectOne(URL)
+      .flush({ access_token: TOKEN_SOCIOS_ADMIN, id_token: 'id', token_type: 'Bearer' });
+    await promesa;
+
+    expect(service.hasGroup('SociosAdmin')).toBe(true);
   });
 
   it('traduce 401 a AuthError y no autentica', async () => {

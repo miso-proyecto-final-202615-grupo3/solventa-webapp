@@ -21,6 +21,7 @@ export class AuthError extends Error {}
 interface Sesion {
   token: string;
   email: string;
+  groups?: string[];
 }
 
 const STORAGE_KEY = 'solventa.auth';
@@ -42,6 +43,14 @@ export class AuthService {
     return this.sesion?.email ?? null;
   }
 
+  get groups(): readonly string[] {
+    return this.sesion?.groups ?? this.leerGrupos(this.sesion?.token);
+  }
+
+  hasGroup(group: string): boolean {
+    return this.groups.includes(group);
+  }
+
   /** Autentica contra el BFF; lanza AuthError con un mensaje listo para mostrar. */
   async login(credentials: Credentials): Promise<void> {
     if (!credentials.email || !credentials.password) {
@@ -54,7 +63,11 @@ export class AuthService {
           password: credentials.password,
         }),
       );
-      this.guardarSesion({ token: res.access_token, email: credentials.email.trim() });
+      this.guardarSesion({
+        token: res.access_token,
+        email: credentials.email.trim(),
+        groups: this.leerGrupos(res.access_token),
+      });
     } catch (e) {
       throw this.traducirError(e);
     }
@@ -84,7 +97,13 @@ export class AuthService {
     try {
       const raw = sessionStorage.getItem(STORAGE_KEY);
       const sesion = raw ? (JSON.parse(raw) as Partial<Sesion>) : null;
-      return sesion?.token && sesion.email ? { token: sesion.token, email: sesion.email } : null;
+      return sesion?.token && sesion.email
+        ? {
+            token: sesion.token,
+            email: sesion.email,
+            groups: Array.isArray(sesion.groups) ? sesion.groups : undefined,
+          }
+        : null;
     } catch {
       return null;
     }
@@ -95,5 +114,18 @@ export class AuthService {
       return new AuthError('Correo o contraseña incorrectos.');
     }
     return e;
+  }
+
+  private leerGrupos(token: string | undefined): string[] {
+    if (!token) return [];
+    try {
+      const payload = token.split('.')[1];
+      if (!payload) return [];
+      const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+      const json = JSON.parse(atob(base64.padEnd(Math.ceil(base64.length / 4) * 4, '=')));
+      return Array.isArray(json['cognito:groups']) ? json['cognito:groups'] : [];
+    } catch {
+      return [];
+    }
   }
 }

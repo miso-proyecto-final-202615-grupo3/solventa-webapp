@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/auth/auth.guard';
+import { authGuard, sociosAdminGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -7,6 +7,14 @@ export const routes: Routes = [
     path: 'login',
     title: 'Entra a tu cuenta · Solventa',
     loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
+  },
+  {
+    path: 'recuperar',
+    title: 'Recupera tu cuenta · Solventa',
+    loadComponent: () =>
+      import('./features/auth/recuperar/recuperar.component').then(
+        (m) => m.RecuperarClaveComponent,
+      ),
   },
   {
     path: 'cliente',
@@ -131,6 +139,55 @@ export const routes: Routes = [
       import('./features/onboarding/pages/terminos/terminos.component').then(
         (m) => m.TerminosComponent,
       ),
+  },
+  {
+    path: 'operador',
+    canActivate: [sociosAdminGuard],
+    loadComponent: () =>
+      import('./features/cliente/shell/cliente-shell.component').then(
+        (m) => m.ClienteShellComponent,
+      ),
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'socios' },
+      {
+        path: 'socios',
+        title: 'Socios registrados · Solventa',
+        data: { kicker: 'backoffice', titulo: 'Socios registrados' },
+        loadComponent: () =>
+          import('./features/operador/pages/socios/socios-listado.component').then(
+            (m) => m.SociosListadoComponent,
+          ),
+      },
+      {
+        path: 'socios/nuevo',
+        title: 'Registrar socio · Solventa',
+        data: { kicker: 'backoffice', titulo: 'Registrar socio' },
+        loadComponent: () =>
+          import('./features/operador/pages/socios/socios.component').then(
+            (m) => m.SociosComponent,
+          ),
+      },
+    ],
+  },
+  {
+    path: 'operador/socios',
+    title: 'Socios registrados · Solventa',
+    canActivate: [sociosAdminGuard],
+    loadComponent: () =>
+      import('./features/operador/pages/socios/socios.component').then((m) => m.SociosComponent),
+  },
+  {
+    path: 'operador/socios/nuevo',
+    title: 'Registrar socio · Solventa',
+    canActivate: [sociosAdminGuard],
+    loadComponent: () =>
+      import('./features/operador/pages/socios/socios.component').then((m) => m.SociosComponent),
+  },
+  {
+    path: 'socio',
+    title: 'Portal del socio · Solventa',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/socio/socio.component').then((m) => m.SocioComponent),
   },
   {
     path: 'operador/auditoria-emision',
