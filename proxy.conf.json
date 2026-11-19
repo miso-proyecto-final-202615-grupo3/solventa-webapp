@@ -1,6 +1,11 @@
 {
-  "/api": {
+  "/api/v1/bff-web": {
     "target": "http://localhost:8000",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/api/v1/bff-socios": {
+    "target": "http://localhost:8007",
     "secure": false,
     "changeOrigin": true
   }
