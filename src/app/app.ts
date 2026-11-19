@@ -12,7 +12,7 @@ import { filter, map } from 'rxjs';
 export class App {
   private readonly router = inject(Router);
 
-  /** Los portales autenticados traen su propio menú y ocupan toda la pantalla. */
+  /** Los portales y el playground traen su propio menú y ocupan toda la pantalla. */
   protected readonly portal = toSignal(
     this.router.events.pipe(
       filter((e): e is NavigationEnd => e instanceof NavigationEnd),
@@ -22,6 +22,6 @@ export class App {
   );
 
   private esPortal(url: string): boolean {
-    return ['/cliente', '/operador', '/socio'].some((ruta) => url.startsWith(ruta));
+    return ['/cliente', '/operador', '/socio', '/playground'].some((ruta) => url.startsWith(ruta));
   }
 }

@@ -69,7 +69,7 @@ export class AuditoriaEmisionComponent {
 
   detalleEvento(evento: EventoTrazabilidadEmision): string {
     return (
-      Object.entries(evento.detalles)
+      Object.entries(evento.detalles ?? {})
         .map(([clave, valor]) => `${clave}: ${String(valor)}`)
         .join(' · ') || '—'
     );

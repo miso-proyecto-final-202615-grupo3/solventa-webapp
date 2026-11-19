@@ -17,6 +17,12 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'playground',
+    title: 'Playground de APIs · Solventa',
+    loadComponent: () =>
+      import('./features/playground/playground.component').then((m) => m.PlaygroundComponent),
+  },
+  {
     path: 'cliente',
     canActivate: [authGuard],
     loadComponent: () =>

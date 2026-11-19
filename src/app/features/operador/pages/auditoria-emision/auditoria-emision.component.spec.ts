@@ -97,6 +97,29 @@ describe('AuditoriaEmisionComponent', () => {
     expect(el().querySelector('[role="alert"]')?.textContent).toContain('auditor');
   });
 
+  it('muestra eventos sin detalles, que son opcionales en el contrato', async () => {
+    const input = el().querySelector('input') as HTMLInputElement;
+    input.value = 'POL-20261113-AB12CD34';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    boton().click();
+    const evento: Partial<(typeof EVENTOS)[number]> = { ...EVENTOS[0] };
+    delete evento.detalles;
+    httpMock
+      .expectOne((request) => request.url === URL)
+      .flush({
+        poliza_id: 'poliza-1',
+        numero: input.value,
+        cotizacion_id: 'quote-1',
+        cliente_id: 'client-1',
+        eventos: [evento],
+      });
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(el().querySelector('tbody tr')?.textContent).toContain('—');
+  });
+
   it('es una consulta de solo lectura', () => {
     expect(Array.from(el().querySelectorAll('button')).map((b) => b.textContent?.trim())).toEqual([
       'Consultar trazabilidad',

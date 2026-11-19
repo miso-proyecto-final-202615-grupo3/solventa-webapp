@@ -9,7 +9,7 @@ export interface EventoTrazabilidadEmision {
   resultado: string;
   referencia_id: string;
   correlation_id: string | null;
-  detalles: Record<string, unknown>;
+  detalles?: Record<string, unknown>;
 }
 
 export interface TrazabilidadEmision {
