@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   deploy:
-    name: Deploy webapp to ${{ github.ref_name == 'main' && 'prod' || 'dev' }} ECR
+    name: Deploy webapp to ${{ github.ref_name == 'main' && 'prod' || 'dev' }}
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name == 'main' && 'prod' || 'dev' }}
     timeout-minutes: 30
