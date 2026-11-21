@@ -10,3 +10,12 @@ export interface SocioRegistrado extends RegistrarSocioRequest {
   estado: 'PENDIENTE' | 'ACTIVO' | 'RECHAZADO';
   creado_en: string;
 }
+
+export interface ApiKeyResumen {
+  api_key_id: string;
+  fecha_generacion: string;
+}
+
+export interface ApiKeyCreada extends ApiKeyResumen {
+  api_key: string;
+}
