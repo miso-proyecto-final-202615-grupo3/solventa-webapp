@@ -45,4 +45,26 @@ describe('SocioService', () => {
     });
     expect(resultado).toMatchObject({ id: 'socio-1', estado: 'PENDIENTE' });
   });
+
+  it('genera credenciales para un socio', () => {
+    let resultado: unknown;
+
+    service.generarApiKey('socio-1').subscribe((credencial) => (resultado = credencial));
+
+    const request = httpMock.expectOne('/api/v1/bff-web/socios/socio-1/api-keys');
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({});
+    expect(request.request.headers.get('Authorization')).toBe('Bearer token-socios-admin');
+    request.flush({
+      api_key_id: 'key-1',
+      api_key: 'secret-value',
+      fecha_generacion: '2026-11-18T00:00:00Z',
+    });
+
+    expect(resultado).toEqual({
+      api_key_id: 'key-1',
+      api_key: 'secret-value',
+      fecha_generacion: '2026-11-18T00:00:00Z',
+    });
+  });
 });

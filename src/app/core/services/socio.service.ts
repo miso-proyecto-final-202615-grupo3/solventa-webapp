@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../auth/auth.service';
-import { RegistrarSocioRequest, SocioRegistrado } from '../models/socio';
+import { ApiKeyCreada, RegistrarSocioRequest, SocioRegistrado } from '../models/socio';
 
 @Injectable({ providedIn: 'root' })
 export class SocioService {
@@ -21,5 +21,11 @@ export class SocioService {
     let headers = new HttpHeaders();
     if (this.auth.token) headers = headers.set('Authorization', `Bearer ${this.auth.token}`);
     return this.http.get<SocioRegistrado[]>(this.url, { headers });
+  }
+
+  generarApiKey(socioId: string): Observable<ApiKeyCreada> {
+    let headers = new HttpHeaders();
+    if (this.auth.token) headers = headers.set('Authorization', `Bearer ${this.auth.token}`);
+    return this.http.post<ApiKeyCreada>(`${this.url}/${socioId}/api-keys`, {}, { headers });
   }
 }
