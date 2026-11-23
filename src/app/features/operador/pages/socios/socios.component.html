@@ -1,0 +1,151 @@
+<main class="socios">
+  <header class="socios__header">
+    <p class="socios__eyebrow">Distribución <span>·</span> Backoffice</p>
+    <h1>Registrar socio</h1>
+    <p class="socios__intro">
+      Crea el registro inicial de un canal de distribución. El socio quedará pendiente de
+      aprobación; todavía no podrá consumir las API.
+    </p>
+  </header>
+
+  <div class="socios__layout">
+    <aside class="socios__context" aria-label="Estado del onboarding">
+      <p class="socios__step">01 <span>/</span> alta</p>
+      <h2>Un nuevo canal empieza aquí.</h2>
+      <p>Registra la información comercial y el medio de integración acordado.</p>
+      <div class="socios__pending">
+        <span class="socios__dot" aria-hidden="true"></span>
+        <span><strong>PENDIENTE</strong><br />Estado inicial del socio</span>
+      </div>
+      <p>
+        El registro queda auditado con tu usuario y fecha. La aprobación y las credenciales son
+        pasos posteriores.
+      </p>
+    </aside>
+
+    <section class="socios__panel" aria-labelledby="form-title">
+      <div class="socios__panel-heading">
+        <div>
+          <p class="socios__overline">Datos del socio</p>
+          <h2 id="form-title">Información de integración</h2>
+        </div>
+        <span class="socios__required">Todos los campos requeridos</span>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="registrar()" novalidate>
+        <label class="socios__field">
+          <span class="socios__label">Correo del socio</span>
+          <input
+            class="socios__control"
+            formControlName="correo"
+            type="email"
+            autocomplete="email"
+            placeholder="Ej. contacto@yopmail.com"
+            required
+          />
+          @if (intentoEnvio() && form.controls.correo.invalid) {
+            <span class="socios__field-error">Ingresa un correo válido.</span>
+          }
+        </label>
+
+        <label class="socios__field">
+          <span class="socios__label">Nombre del socio</span>
+          <input
+            class="socios__control"
+            formControlName="nombre"
+            type="text"
+            maxlength="120"
+            autocomplete="organization"
+            placeholder="Ej. Banco Andino"
+            required
+          />
+          @if (intentoEnvio() && form.controls.nombre.invalid) {
+            <span class="socios__field-error"
+              >Ingresa un nombre válido (máximo 120 caracteres).</span
+            >
+          }
+        </label>
+
+        <label class="socios__field">
+          <span class="socios__label">Tipo de socio</span>
+          <input
+            class="socios__control"
+            formControlName="tipo_socio"
+            type="text"
+            maxlength="60"
+            placeholder="Ej. Banco, fintech, aerolínea"
+            required
+          />
+          @if (intentoEnvio() && form.controls.tipo_socio.invalid) {
+            <span class="socios__field-error"
+              >Ingresa el tipo de socio (máximo 60 caracteres).</span
+            >
+          }
+        </label>
+
+        <label class="socios__field">
+          <span class="socios__label">Canal de integración</span>
+          <input
+            class="socios__control"
+            formControlName="canal_integracion"
+            type="text"
+            maxlength="60"
+            placeholder="Ej. API, portal de ventas"
+            required
+          />
+          @if (intentoEnvio() && form.controls.canal_integracion.invalid) {
+            <span class="socios__field-error">
+              Ingresa el canal de integración (máximo 60 caracteres).
+            </span>
+          }
+        </label>
+
+        @if (error()) {
+          <p class="socios__error" role="alert">{{ error() }}</p>
+        }
+
+        <div class="socios__actions">
+          <button class="socios__submit" type="submit" [disabled]="registrando()">
+            {{ registrando() ? 'Registrando…' : 'Registrar socio' }}
+          </button>
+        </div>
+      </form>
+
+      @if (socioRegistrado(); as socio) {
+        <section class="socios__success" role="status" aria-live="polite">
+          <div>
+            <p class="socios__overline">Registro creado</p>
+            <h3>{{ socio.nombre }}</h3>
+            <p>
+              {{ socio.tipo_socio }} <span aria-hidden="true">·</span> {{ socio.canal_integracion }}
+            </p>
+          </div>
+          <span class="socios__status">{{ socio.estado }}</span>
+          <p class="socios__id">
+            Referencia: <code>{{ socio.id }}</code>
+          </p>
+        </section>
+      }
+
+      <section class="socios__list" aria-labelledby="registered-title">
+        <p class="socios__overline">Socios registrados</p>
+        <h2 id="registered-title">Directorio</h2>
+        @if (cargandoSocios()) {
+          <p>Cargando socios...</p>
+        } @else if (socios().length === 0) {
+          <p>Aún no hay socios registrados.</p>
+        } @else {
+          <ul>
+            @for (socio of socios(); track socio.id) {
+              <li>
+                <strong>{{ socio.nombre }}</strong>
+                <span>{{ socio.correo }}</span>
+                <small>{{ socio.estado }}</small>
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    </section>
+  </div>
+</main>

@@ -1,0 +1,83 @@
+<main class="socios-listado">
+  <header class="socios-listado__header">
+    <p class="kicker">Backoffice</p>
+    <h1>Socios registrados</h1>
+    <p>Consulta los canales de distribución creados y su estado actual.</p>
+  </header>
+
+  <section class="socios-listado__panel" aria-labelledby="socios-title">
+    <div class="socios-listado__heading">
+      <div>
+        <p class="socios-listado__overline">Directorio</p>
+        <h2 id="socios-title">Socios de distribución</h2>
+      </div>
+      <button type="button" (click)="cargar()" [disabled]="cargando()">Actualizar</button>
+    </div>
+
+    @if (cargando()) {
+      <p class="socios-listado__mensaje">Cargando socios...</p>
+    } @else if (error()) {
+      <p class="socios-listado__mensaje socios-listado__mensaje--error" role="alert">
+        No pudimos cargar los socios. Intenta de nuevo.
+      </p>
+    } @else if (socios().length === 0) {
+      <p class="socios-listado__mensaje">Aún no hay socios registrados.</p>
+    } @else {
+      <div class="socios-listado__tabla" role="table" aria-label="Socios registrados">
+        <div class="socios-listado__fila socios-listado__fila--encabezado" role="row">
+          <span>Nombre</span><span>Correo</span><span>Tipo</span><span>Estado</span
+          ><span>Acción</span>
+        </div>
+        @for (socio of socios(); track socio.id) {
+          <div class="socios-listado__fila" role="row">
+            <strong>{{ socio.nombre }}</strong>
+            <span>{{ socio.correo }}</span>
+            <span>{{ socio.tipo_socio }}</span>
+            <small>{{ socio.estado }}</small>
+            <button
+              type="button"
+              class="socios-listado__credencial"
+              [disabled]="socio.estado !== 'ACTIVO' || generandoPara() === socio.id"
+              (click)="generarCredencial(socio)"
+            >
+              {{ generandoPara() === socio.id ? 'Generando…' : 'Generar credenciales' }}
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  @if (errorCredencial()) {
+    <p class="socios-listado__mensaje socios-listado__mensaje--error" role="alert">
+      {{ errorCredencial() }}
+    </p>
+  }
+
+  @if (credencialCreada(); as credencial) {
+    <section class="socios-listado__credencial-panel" role="status" aria-live="polite">
+      <div class="socios-listado__heading">
+        <div>
+          <p class="socios-listado__overline">Credenciales generadas</p>
+          <h2>Guarda el secreto ahora</h2>
+        </div>
+        <button type="button" (click)="cerrarCredencial()">Cerrar</button>
+      </div>
+      <p>El secreto no se puede consultar nuevamente desde el sistema.</p>
+      <dl>
+        <div>
+          <dt>Identificador</dt>
+          <dd>
+            <code>{{ credencial.api_key_id }}</code>
+          </dd>
+        </div>
+        <div>
+          <dt>Secreto</dt>
+          <dd>
+            <code>{{ credencial.api_key }}</code>
+          </dd>
+        </div>
+      </dl>
+    </section>
+  }
+</main>

@@ -46,3 +46,8 @@
   font-size: var(--size-caption);
   color: var(--ink-62);
 }
+
+.login__playground {
+  justify-self: center;
+  margin-top: calc(var(--space-4) * -1);
+}

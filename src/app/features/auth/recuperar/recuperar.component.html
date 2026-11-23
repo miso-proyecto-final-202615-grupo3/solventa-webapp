@@ -1,0 +1,105 @@
+<main class="recuperar">
+  <section class="recuperar__card" aria-labelledby="titulo-recuperacion">
+    <a class="recuperar__marca" routerLink="/login">Solventa <span>/ Acceso seguro</span></a>
+
+    @if (paso() === 'solicitud') {
+      <p class="recuperar__paso">Recuperación <span>01 / 02</span></p>
+      <h1 id="titulo-recuperacion">Recupera tu cuenta</h1>
+      <p class="recuperar__intro">
+        Ingresa el correo asociado a tu cuenta. Si existe y está verificado, enviaremos un código.
+      </p>
+
+      <form [formGroup]="solicitudForm" (ngSubmit)="solicitarCodigo()" novalidate>
+        <label class="recuperar__campo" for="email">
+          <span>Correo electrónico</span>
+          <input
+            id="email"
+            type="email"
+            formControlName="correo"
+            autocomplete="email"
+            placeholder="nombre@correo.com"
+          />
+        </label>
+        @if (intentoSolicitud() && solicitudForm.controls.correo.invalid) {
+          <p class="recuperar__error-campo" role="alert">Ingresa un correo válido.</p>
+        }
+        @if (error()) {
+          <p class="recuperar__error" role="alert">{{ error() }}</p>
+        }
+        <button class="recuperar__primario" type="submit" [disabled]="enviando()">
+          {{ enviando() ? 'Enviando…' : 'Enviar código' }}
+        </button>
+      </form>
+    } @else if (paso() === 'confirmacion') {
+      <p class="recuperar__paso">Recuperación <span>02 / 02</span></p>
+      <h1 id="titulo-recuperacion">Revisa tu correo</h1>
+      <p class="recuperar__intro">
+        Si el correo <strong>{{ correoSolicitado() }}</strong> tiene una cuenta verificada,
+        recibirás un código. Escríbelo a continuación y define una contraseña nueva.
+      </p>
+
+      <form [formGroup]="confirmacionForm" (ngSubmit)="confirmarCambio()" novalidate>
+        <label class="recuperar__campo" for="codigo">
+          <span>Código de recuperación</span>
+          <input id="codigo" formControlName="codigo" autocomplete="one-time-code" />
+        </label>
+        @if (intentoConfirmacion() && confirmacionForm.controls.codigo.invalid) {
+          <p class="recuperar__error-campo" role="alert">Ingresa el código recibido.</p>
+        }
+
+        <label class="recuperar__campo" for="nueva-clave">
+          <span>Nueva contraseña</span>
+          <input
+            id="nueva-clave"
+            type="password"
+            formControlName="nueva_clave"
+            autocomplete="new-password"
+          />
+        </label>
+        @if (intentoConfirmacion() && confirmacionForm.controls.nueva_clave.invalid) {
+          <p class="recuperar__error-campo" role="alert">Debe tener entre 8 y 128 caracteres.</p>
+        }
+
+        <label class="recuperar__campo" for="confirmar-clave">
+          <span>Repite la contraseña</span>
+          <input
+            id="confirmar-clave"
+            type="password"
+            formControlName="confirmar_clave"
+            autocomplete="new-password"
+          />
+        </label>
+        @if (
+          intentoConfirmacion() &&
+          confirmacionForm.controls.confirmar_clave.valid &&
+          !clavesCoinciden()
+        ) {
+          <p class="recuperar__error-campo" role="alert">Las contraseñas no coinciden.</p>
+        }
+
+        @if (error()) {
+          <p class="recuperar__error" role="alert">{{ error() }}</p>
+        }
+
+        <button class="recuperar__primario" type="submit" [disabled]="enviando()">
+          {{ enviando() ? 'Actualizando…' : 'Actualizar contraseña' }}
+        </button>
+      </form>
+      <div class="recuperar__acciones-secundarias">
+        <button type="button" class="recuperar__enlace" (click)="reenviarCodigo()">
+          Enviar otro código
+        </button>
+        <button type="button" class="recuperar__enlace" (click)="volverASolicitud()">
+          Cambiar correo
+        </button>
+      </div>
+    } @else {
+      <p class="recuperar__paso">Recuperación completada</p>
+      <h1 id="titulo-recuperacion">Contraseña actualizada</h1>
+      <p class="recuperar__intro">Ya puedes entrar a tu cuenta con tu nueva contraseña.</p>
+      <a class="recuperar__primario recuperar__enlace-login" routerLink="/login">
+        Volver a iniciar sesión
+      </a>
+    }
+  </section>
+</main>

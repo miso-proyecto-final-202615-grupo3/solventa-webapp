@@ -1,0 +1,200 @@
+<div class="pg">
+  <nav class="pg__nav" aria-label="APIs del proceso de venta asistida">
+    <div class="pg__marca">Solventa <small>playground</small></div>
+    <div class="pg__lista">
+      @for (grupo of grupos; track grupo.nombre) {
+        <p class="pg__grupo">{{ grupo.nombre }}</p>
+        <ul class="pg__items">
+          @for (p of grupo.pasos; track p.id) {
+            <li>
+              <button
+                type="button"
+                class="pg__item"
+                [class.pg__item--activo]="p.id === paso().id"
+                [attr.aria-current]="p.id === paso().id ? 'step' : null"
+                (click)="seleccionar(p.id)"
+              >
+                <span class="pg__metodo pg__metodo--{{ p.metodo.toLowerCase() }}">{{
+                  p.metodo
+                }}</span>
+                <span class="pg__item-titulo">{{ p.titulo }}</span>
+                @if (resultados()[p.id]; as r) {
+                  <span
+                    class="pg__punto pg__punto--{{ r.estado }}"
+                    [attr.aria-label]="'Estado: ' + r.estado"
+                  ></span>
+                }
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+    <div class="pg__pie">
+      <a class="pg__volver" routerLink="/login">← Volver al login</a>
+    </div>
+  </nav>
+
+  <div class="pg__cuerpo">
+    <header class="pg__barra">
+      <div>
+        <p class="kicker">playground · bff socios</p>
+        <h1 class="pg__titulo">Venta asistida · seguro embebido</h1>
+      </div>
+      <div class="pg__acciones">
+        @if (espera(); as s) {
+          <span class="pg__espera" role="status">Siguiente llamado en {{ s }} s</span>
+        }
+        @if (reproduciendo()) {
+          <button type="button" class="btn btn--secondary" (click)="detener()">■ Detener</button>
+        } @else {
+          <button type="button" class="btn btn--primary" (click)="reproducir()">
+            ▶ Play · todas las APIs
+          </button>
+        }
+        <button
+          type="button"
+          class="btn btn--secondary"
+          [disabled]="reproduciendo()"
+          (click)="restablecer()"
+        >
+          Restablecer
+        </button>
+      </div>
+    </header>
+
+    <div class="pg__pagina">
+      <section class="pg__url" aria-label="API seleccionada">
+        <p class="pg__paso">
+          Paso {{ indice() }} de {{ pasos.length }} · {{ paso().grupo }} · {{ paso().titulo }}
+          <span class="pg__servicio">{{
+            paso().servicio === 'web' ? 'BFF Web' : 'BFF Socios'
+          }}</span>
+        </p>
+        <div class="pg__url-fila">
+          <span class="pg__metodo pg__metodo--{{ paso().metodo.toLowerCase() }}">{{
+            paso().metodo
+          }}</span>
+          <output class="pg__url-valor" aria-label="URL de la API">{{ vista().url }}</output>
+          <button
+            type="button"
+            class="btn btn--primary"
+            [disabled]="reproduciendo() || ejecutandoManual()"
+            (click)="ejecutar()"
+          >
+            {{ ejecutandoManual() ? 'Ejecutando…' : 'Ejecutar' }}
+          </button>
+        </div>
+        @if (paso().nota; as nota) {
+          <p class="pg__nota">{{ nota }}</p>
+        }
+      </section>
+
+      <section class="pg__panel" aria-labelledby="titulo-peticion">
+        <h2 id="titulo-peticion" class="pg__subtitulo">Petición</h2>
+
+        <div class="field">
+          <label for="headers">Headers (JSON)</label>
+          <textarea
+            id="headers"
+            class="pg__editor"
+            rows="5"
+            spellcheck="false"
+            [value]="vista().headers"
+            (input)="editar('headers', $event)"
+          ></textarea>
+        </div>
+
+        @if (nombresPath().length > 0) {
+          <fieldset class="pg__path">
+            <legend>Parámetros de path</legend>
+            @for (nombre of nombresPath(); track nombre) {
+              <div class="field">
+                <label [for]="'path-' + nombre">{{ nombre }}</label>
+                <input
+                  [id]="'path-' + nombre"
+                  class="input input--mono"
+                  spellcheck="false"
+                  [value]="vista().path[nombre]"
+                  (input)="editarPath(nombre, $event)"
+                />
+              </div>
+            }
+          </fieldset>
+        }
+
+        @if (vista().body !== null) {
+          <div class="field">
+            <label for="payload">
+              Payload (JSON){{ paso().archivos ? ' · se envía como multipart/form-data' : '' }}
+            </label>
+            <textarea
+              id="payload"
+              class="pg__editor pg__editor--alto"
+              rows="12"
+              spellcheck="false"
+              [value]="vista().body"
+              (input)="editar('body', $event)"
+            ></textarea>
+          </div>
+        }
+
+        @if (paso().archivos; as archivos) {
+          <ul class="pg__archivos" aria-label="Archivos adjuntos">
+            @for (a of archivos; track a.campo) {
+              <li>
+                <code>{{ a.campo }}</code> · {{ a.nombre }} · {{ a.tipo }} (se genera de ejemplo)
+              </li>
+            }
+          </ul>
+        }
+      </section>
+
+      <section class="pg__panel" aria-labelledby="titulo-respuesta">
+        <h2 id="titulo-respuesta" class="pg__subtitulo">Respuesta</h2>
+
+        @if (resultado(); as r) {
+          @if (r.mensaje) {
+            <div class="callout callout--alert" role="alert">{{ r.mensaje }}</div>
+          }
+          @if (r.estado === 'ejecutando' && !r.http) {
+            <p class="pg__vacio" role="status">
+              Esperando respuesta{{ r.intento && r.intento > 1 ? ' · intento ' + r.intento : '' }}…
+            </p>
+          }
+          @if (r.http; as http) {
+            <p class="pg__http">
+              <span class="pg__codigo pg__codigo--{{ claseEstado(http.estado) }}"
+                >HTTP {{ http.estado }}</span
+              >
+              <span class="pg__ms">{{ http.ms }} ms</span>
+              @if (r.estado === 'ejecutando') {
+                <span class="pg__ms">· reintentando (intento {{ r.intento }})</span>
+              }
+            </p>
+            <div class="field">
+              <span id="resp-headers-etiqueta" class="pg__etiqueta">Headers de respuesta</span>
+              <pre
+                class="pg__salida"
+                role="region"
+                aria-labelledby="resp-headers-etiqueta"
+                tabindex="0"
+                >{{ http.headers | json }}</pre>
+            </div>
+            <div class="field">
+              <span id="resp-payload-etiqueta" class="pg__etiqueta">Payload de respuesta</span>
+              <pre
+                class="pg__salida pg__salida--alto"
+                role="region"
+                aria-labelledby="resp-payload-etiqueta"
+                tabindex="0"
+                >{{ http.contenido || '(sin contenido)' }}</pre>
+            </div>
+          }
+        } @else {
+          <p class="pg__vacio">Aún no has ejecutado esta API.</p>
+        }
+      </section>
+    </div>
+  </div>
+</div>
